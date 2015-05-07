@@ -1,0 +1,37 @@
+{
+    "name": "agitation/user",
+    "type": "symfony-bundle",
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.4.9",
+        "symfony/symfony": "2.3.*",
+        "agitation/intl": "dev-master",
+        "agitation/validation": "dev-master",
+        "agitation/core": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Agit\\UserBundle\\": ""
+        }
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "AGITsol GmbH",
+            "homepage": "http://www.agitsol.com/"
+        }
+    ],
+    "description": "Provides an extendable component for user authentication and authorisation for the Agitation framework.",
+    "keywords": [
+        "agit",
+        "agitation",
+        "tixys",
+        "user",
+        "authentication",
+        "authorisation",
+        "authorization",
+        "roles",
+        "capabilities",
+        "pluggable"
+    ]
+}
