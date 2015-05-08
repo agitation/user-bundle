@@ -1,0 +1,12 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"nplurals=2; plural=(n != 1);\n"
+
+#: @AgitUserBundle/Service/UserService.php:44
+#: @AgitUserBundle/Service/UserService.php:50
+#: @AgitUserBundle/Service/UserService.php:56
+msgid "Authentication has failed. Please check your user name and your password."
+msgstr ""
