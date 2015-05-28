@@ -7,8 +7,8 @@ services:
     # listening for capabilities
     agit.user.register.capability:
         private: true
-        class: FixtureListener
-        factory_service:  agit.pluggable.fixture.listener.factory
+        class: SeedListener
+        factory_service:  agit.pluggable.seed.listener.factory
         factory_method:   create
         arguments: [AgitUserBundle:UserCapability, 1]
         tags: [{ name: kernel.event_listener, event: agit.pluggable, method: onRegistration }]
@@ -16,13 +16,13 @@ services:
     # listening for roles
     agit.user.register.role:
         private: true
-        class: FixtureListener
-        factory_service:  agit.pluggable.fixture.listener.factory
+        class: SeedListener
+        factory_service:  agit.pluggable.seed.listener.factory
         factory_method:   create
         arguments: [AgitUserBundle:UserRole, 2]
         tags: [{ name: kernel.event_listener, event: agit.pluggable, method: onRegistration }]
 
     # registering our own roles
-    _agit.user.fixture.role.listener:
-        class: Agit\UserBundle\EventListener\UserRoleFixtureData
+    agit.user.seed.role.listener:
+        class: Agit\UserBundle\EventListener\UserRoleSeedData
         tags: [{ name: kernel.event_listener, event: AgitUserBundle:UserRole, method: onRegistration }]
