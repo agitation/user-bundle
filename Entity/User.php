@@ -61,25 +61,25 @@ class User extends AbstractEntity implements UserInterface
     /**
      * @ORM\ManyToOne(targetEntity="UserRole")
      */
-    private $Role;
+    private $role;
 
     /**
      * Extra capabilities, i.e. which are not part of the user's Role
      *
      * @ORM\ManyToMany(targetEntity="UserCapability")
      */
-    private $CapabilityList = [];
+    private $capabilityList = [];
 
     public function __construct()
     {
         $this->salt = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
         $this->password = sha1(uniqid(mt_rand(), true));
-        $this->CapabilityList = new ArrayCollection();
+        $this->capabilityList = new ArrayCollection();
     }
 
-    public function equals(UserInterface $User)
+    public function equals(UserInterface $user)
     {
-        return $User->getId() === $this->getId();
+        return $user->getId() === $this->getId();
     }
 
     public function getUsername()
@@ -131,9 +131,9 @@ class User extends AbstractEntity implements UserInterface
         }
         else
         {
-            foreach ($this->getCapabilityList()->getValues() as $Capability)
+            foreach ($this->getCapabilityList()->getValues() as $capability)
             {
-                if ($Capability->getId() === $cap)
+                if ($capability->getId() === $cap)
                 {
                     $has = true;
                     break;
@@ -242,9 +242,9 @@ class User extends AbstractEntity implements UserInterface
      * @param UserRole $role
      * @return User
      */
-    public function setRole(UserRole $Role)
+    public function setRole(UserRole $role)
     {
-        $this->Role = $Role;
+        $this->role = $role;
         return $this;
     }
 
@@ -255,29 +255,29 @@ class User extends AbstractEntity implements UserInterface
      */
     public function getRole()
     {
-        return $this->Role;
+        return $this->role;
     }
 
     /**
      * Add Capability
      *
-     * @param UserCapability $Capability
+     * @param UserCapability $capability
      * @return User
      */
-    public function addCapability(UserCapability $Capability)
+    public function addCapability(UserCapability $capability)
     {
-        $this->CapabilityList[] = $Capability;
+        $this->capabilityList[] = $capability;
         return $this;
     }
 
     /**
      * Remove Capability
      *
-     * @param UserCapability $Capability
+     * @param UserCapability $capability
      */
-    public function removeCapability(UserCapability $Capability)
+    public function removeCapability(UserCapability $capability)
     {
-        $this->CapabilityList->removeElement($Capability);
+        $this->capabilityList->removeElement($capability);
     }
 
     /**
@@ -287,6 +287,6 @@ class User extends AbstractEntity implements UserInterface
      */
     public function getCapabilityList()
     {
-        return $this->CapabilityList;
+        return $this->capabilityList;
     }
 }

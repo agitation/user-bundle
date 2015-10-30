@@ -15,26 +15,26 @@ use Agit\IntlBundle\Service\Translate;
 
 class UserRoleSeedData
 {
-    public function onRegistration(SeedRegistrationEvent $RegistrationEvent)
+    public function onRegistration(SeedRegistrationEvent $registrationEvent)
     {
-        $Translate = new Translate();
+        $translate = new Translate();
 
         $roles = [
-            ['administrator', $Translate->noopX('Administrator', 'user role'), true], // super user
-            ['member', $Translate->noopX('Member', 'user role'), false], // should not have any capabilities, just a fallback role
+            ['administrator', $translate->noopX('Administrator', 'user role'), true], // super user
+            ['member', $translate->noopX('Member', 'user role'), false], // should not have any capabilities, just a fallback role
         ];
 
         foreach ($roles as $role)
         {
-            $RegistrationData = $RegistrationEvent->createContainer();
+            $registrationData = $registrationEvent->createContainer();
 
-            $RegistrationData->setData([
+            $registrationData->setData([
                 'id' => $role[0],
                 'name' => $role[1],
                 'isSuper' => $role[2]
             ]);
 
-            $RegistrationEvent->register($RegistrationData);
+            $registrationEvent->register($registrationData);
         }
     }
 }

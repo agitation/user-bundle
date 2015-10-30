@@ -47,6 +47,6 @@ class UserCapability extends AbstractEntity
      */
     public function getName()
     {
-        return $this->Translate->t($this->name);
+        return $this->translate->t($this->name);
     }
 }

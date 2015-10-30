@@ -17,23 +17,23 @@ use Doctrine\ORM\EntityRepository;
 
 class UserRepository extends EntityRepository implements UserProviderInterface
 {
-    private $RoleService;
+    private $roleService;
 
-    private $CapabilityService;
+    private $capabilityService;
 
-    public function setRoleService(RoleService $RoleService)
+    public function setRoleService(RoleService $roleService)
     {
-        $this->RoleService = $RoleService;
+        $this->roleService = $roleService;
     }
 
-    public function setCapabilityService(CapabilityService $CapabilityService)
+    public function setCapabilityService(CapabilityService $capabilityService)
     {
-        $this->CapabilityService = $CapabilityService;
+        $this->capabilityService = $capabilityService;
     }
 
     public function loadUserByUsername($email)
     {
-        $User = $this
+        $user = $this
             ->createQueryBuilder('u')
             ->where('u.email = :email')
             ->andWhere('u.status = ?1')
@@ -42,10 +42,10 @@ class UserRepository extends EntityRepository implements UserProviderInterface
             ->setMaxResults(1)
             ->getQuery()->getOneOrNullResult();
 
-        if (!$User)
+        if (!$user)
             throw new UsernameNotFoundException("No user was found.");
 
-        return $User;
+        return $user;
     }
 
     public function userExists($email)
@@ -58,14 +58,14 @@ class UserRepository extends EntityRepository implements UserProviderInterface
             ->getQuery()->getOneOrNullResult();
     }
 
-    public function refreshUser(UserInterface $User)
+    public function refreshUser(UserInterface $user)
     {
-        $class = get_class($User);
+        $class = get_class($user);
 
         if (!$this->supportsClass($class))
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', $class));
 
-        return $this->find($User->getId());
+        return $this->find($user->getId());
     }
 
     public function supportsClass($class)

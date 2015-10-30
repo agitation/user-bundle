@@ -20,68 +20,68 @@ use Agit\UserBundle\Entity\User;
 
 class UserService
 {
-    private $SecurityContext;
+    private $securityContext;
 
-    private $SecurityEncoderFactory;
+    private $securityEncoderFactory;
 
-    private $EntityManager;
+    private $entityManager;
 
-    private $ValidationService;
+    private $validationService;
 
-    private $User = false;
+    private $user = false;
 
-    public function __construct(SecurityContext $SecurityContext, EncoderFactory $SecurityEncoderFactory, EntityManager $EntityManager, ValidationService $ValidationService)
+    public function __construct(SecurityContext $securityContext, EncoderFactory $securityEncoderFactory, EntityManager $entityManager, ValidationService $validationService)
     {
-        $this->SecurityContext = $SecurityContext;
-        $this->SecurityEncoderFactory = $SecurityEncoderFactory;
-        $this->EntityManager = $EntityManager;
-        $this->ValidationService = $ValidationService;
+        $this->securityContext = $securityContext;
+        $this->securityEncoderFactory = $securityEncoderFactory;
+        $this->entityManager = $entityManager;
+        $this->validationService = $validationService;
     }
 
     public function authenticate($username, $password)
     {
-        if (!$this->ValidationService->isValid('email', $username))
+        if (!$this->validationService->isValid('email', $username))
             throw new UnauthorizedException(Translate::getInstance()->t("Authentication has failed. Please check your user name and your password."));
 
-        $User = $this->EntityManager->getRepository('AgitUserBundle:User')
+        $user = $this->entityManager->getRepository('AgitUserBundle:User')
             ->findOneBy(['email' => $username, 'active' => true]);
 
-        if (!$User)
+        if (!$user)
             throw new UnauthorizedException(Translate::getInstance()->t("Authentication has failed. Please check your user name and your password."));
 
-        $password = $this->SecurityEncoderFactory->getEncoder($User)
-            ->encodePassword($password, $User->getSalt());
+        $password = $this->securityEncoderFactory->getEncoder($user)
+            ->encodePassword($password, $user->getSalt());
 
-        if ($password !== $User->getPassword())
+        if ($password !== $user->getPassword())
             throw new UnauthorizedException(Translate::getInstance()->t("Authentication has failed. Please check your user name and your password."));
 
-        $this->setCurrentUser($User);
+        $this->setCurrentUser($user);
     }
 
     public function getCurrentUser()
     {
-        $User = null;
+        $user = null;
 
-        if ($this->User === false)
+        if ($this->user === false)
         {
-            $SecurityToken = $this->SecurityContext->getToken();
+            $securityToken = $this->securityContext->getToken();
 
-            if (is_object($SecurityToken) && is_callable([$SecurityToken, 'getUser']))
-                $User = $SecurityToken->getUser();
+            if (is_object($securityToken) && is_callable([$securityToken, 'getUser']))
+                $user = $securityToken->getUser();
 
-            $this->User = ($User instanceof User) ? $User : null;
+            $this->user = ($user instanceof User) ? $user : null;
         }
 
-        return $this->User;
+        return $this->user;
     }
 
     public function currentUserCan($cap)
     {
         $can = false;
-        $User = $this->getCurrentUser();
+        $user = $this->getCurrentUser();
 
-        if ($User)
-            $can = $User->hasCapability($cap);
+        if ($user)
+            $can = $user->hasCapability($cap);
 
         return $can;
     }

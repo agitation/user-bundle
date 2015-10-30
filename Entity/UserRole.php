@@ -39,14 +39,14 @@ class UserRole extends AbstractEntity
     /**
      * @ORM\ManyToMany(targetEntity="UserCapability")
      */
-    private $CapabilityList = [];
+    private $capabilityList = [];
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->CapabilityList = new ArrayCollection();
+        $this->capabilityList = new ArrayCollection();
     }
 
     public function hasCapability($cap)
@@ -59,9 +59,9 @@ class UserRole extends AbstractEntity
         }
         else
         {
-            foreach ($this->getCapabilityList()->getValues() as $Capability)
+            foreach ($this->getCapabilityList()->getValues() as $capability)
             {
-                if ($Capability->getId() === $cap)
+                if ($capability->getId() === $cap)
                 {
                     $has = true;
                     break;
@@ -91,7 +91,7 @@ class UserRole extends AbstractEntity
      */
     public function getName()
     {
-        return $this->Translate->t($this->name);
+        return $this->translate->t($this->name);
     }
 
     /**
@@ -111,6 +111,6 @@ class UserRole extends AbstractEntity
      */
     public function getCapabilityList()
     {
-        return $this->CapabilityList;
+        return $this->capabilityList;
     }
 }
