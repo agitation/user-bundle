@@ -5,9 +5,10 @@
     "require": {
         "php": ">=5.4.9",
         "symfony/symfony": "2.3.*",
+        "agitation/core": "dev-master",
         "agitation/intl": "dev-master",
         "agitation/validation": "dev-master",
-        "agitation/core": "dev-master"
+        "agitation/pluggable": "dev-master"
     },
     "autoload": {
         "psr-4": {
