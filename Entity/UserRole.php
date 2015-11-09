@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Agit\CoreBundle\Entity\AbstractEntity;
 use Agit\CoreBundle\Exception\InternalErrorException;
+use Agit\IntlBundle\Translate;
 
 /**
  * @ORM\Entity
@@ -91,7 +92,7 @@ class UserRole extends AbstractEntity
      */
     public function getName()
     {
-        return $this->translate->t($this->name);
+        return Translate::t($this->name);
     }
 
     /**
