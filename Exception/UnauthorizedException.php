@@ -9,7 +9,7 @@
 
 namespace Agit\UserBundle\Exception;
 
-use Agit\CoreBundle\Exception\AgitException;
+use Agit\CommonBundle\Exception\AgitException;
 
 /**
  * The authorization information is invalid.

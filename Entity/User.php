@@ -14,8 +14,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Agit\CoreBundle\Entity\AbstractEntity;
-use Agit\CoreBundle\Exception\InternalErrorException;
+use Agit\CommonBundle\Entity\AbstractEntity;
+use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\UserBundle\Capability\AbstractCapability;
 use Agit\UserBundle\Role\AbstractRole;
 

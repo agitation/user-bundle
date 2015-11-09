@@ -11,8 +11,8 @@ namespace Agit\UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use Agit\CoreBundle\Entity\AbstractEntity;
-use Agit\CoreBundle\Exception\InternalErrorException;
+use Agit\CommonBundle\Entity\AbstractEntity;
+use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\IntlBundle\Translate;
 
 /**

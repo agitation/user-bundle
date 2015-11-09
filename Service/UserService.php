@@ -12,7 +12,7 @@ namespace Agit\UserBundle\Service;
 use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\Security\Core\Encoder\EncoderFactory;
 use Doctrine\ORM\EntityManager;
-use Agit\CoreBundle\Exception\InternalErrorException;
+use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\IntlBundle\Translate;
 use Agit\ValidationBundle\Service\ValidationService;
 use Agit\UserBundle\Exception\UnauthorizedException;
