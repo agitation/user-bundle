@@ -11,18 +11,19 @@ namespace Agit\UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use Agit\CommonBundle\Entity\AbstractEntity;
-use Agit\CommonBundle\Exception\InternalErrorException;
+use Agit\CommonBundle\Entity\IdentityAwareTrait;
 use Agit\IntlBundle\Translate;
 
 /**
  * @ORM\Entity
  */
-class UserCapability extends AbstractEntity
+class UserCapability
 {
+    use IdentityAwareTrait;
+
     /**
      * @ORM\Id
-     * @ORM\Column(type="string",length=35,unique=true)
+     * @ORM\Column(type="string",length=35)
      */
     private $id;
 
@@ -32,22 +33,12 @@ class UserCapability extends AbstractEntity
     private $name;
 
     /**
-     * Get id
-     *
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
      * Get name
      *
      * @return string 
      */
     public function getName()
     {
-        return Translate::t($this->name);
+        return Translate::x($this->name, 'user capability');
     }
 }

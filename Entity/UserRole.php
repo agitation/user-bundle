@@ -12,18 +12,20 @@ namespace Agit\UserBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
-use Agit\CommonBundle\Entity\AbstractEntity;
+use Agit\CommonBundle\Entity\IdentityAwareTrait;
 use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\IntlBundle\Translate;
 
 /**
  * @ORM\Entity
  */
-class UserRole extends AbstractEntity
+class UserRole
 {
+    use IdentityAwareTrait;
+
     /**
      * @ORM\Id
-     * @ORM\Column(type="string",length=35,unique=true)
+     * @ORM\Column(type="string",length=35)
      */
     private $id;
 
@@ -73,18 +75,6 @@ class UserRole extends AbstractEntity
         return $has;
     }
 
-
-
-    /**
-     * Get id
-     *
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
     /**
      * Get name
      *
@@ -92,7 +82,7 @@ class UserRole extends AbstractEntity
      */
     public function getName()
     {
-        return Translate::t($this->name);
+        return Translate::x($this->name, 'user role');
     }
 
     /**
