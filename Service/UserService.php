@@ -9,10 +9,11 @@
 
 namespace Agit\UserBundle\Service;
 
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\SecurityContext;
 use Symfony\Component\Security\Core\Encoder\EncoderFactory;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Doctrine\ORM\EntityManager;
-use Agit\CommonBundle\Exception\InternalErrorException;
 use Agit\IntlBundle\Translate;
 use Agit\ValidationBundle\Service\ValidationService;
 use Agit\UserBundle\Exception\UnauthorizedException;
@@ -20,6 +21,8 @@ use Agit\UserBundle\Entity\User;
 
 class UserService
 {
+    private $session;
+
     private $securityContext;
 
     private $securityEncoderFactory;
@@ -30,8 +33,16 @@ class UserService
 
     private $user = false;
 
-    public function __construct(SecurityContext $securityContext, EncoderFactory $securityEncoderFactory, EntityManager $entityManager, ValidationService $validationService)
+    public function __construct
+    (
+        SessionInterface $session,
+        SecurityContext $securityContext,
+        EncoderFactory $securityEncoderFactory,
+        EntityManager $entityManager,
+        ValidationService $validationService
+    )
     {
+        $this->session = $session;
         $this->securityContext = $securityContext;
         $this->securityEncoderFactory = $securityEncoderFactory;
         $this->entityManager = $entityManager;
@@ -55,7 +66,21 @@ class UserService
         if ($password !== $user->getPassword())
             throw new UnauthorizedException(Translate::t("Authentication has failed. Please check your user name and your password."));
 
-        $this->setCurrentUser($user);
+        $this->user = $user;
+    }
+
+    public function login($username, $password)
+    {
+        $this->authenticate($username, $password);
+        $token = new UsernamePasswordToken($this->user, null, 'agitation', $this->user->getRoles());
+        $this->securityContext->setToken($token);
+    }
+
+    public function logout()
+    {
+        $this->user = null;
+        $this->securityContext->setToken(null);
+        $this->session->invalidate();
     }
 
     public function getCurrentUser()
@@ -77,12 +102,7 @@ class UserService
 
     public function currentUserCan($cap)
     {
-        $can = false;
         $user = $this->getCurrentUser();
-
-        if ($user)
-            $can = $user->hasCapability($cap);
-
-        return $can;
+        return ($user && $user->hasCapability($cap));
     }
 }
