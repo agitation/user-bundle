@@ -223,7 +223,7 @@ class User implements UserInterface
      * @param UserRole $role
      * @return User
      */
-    public function setRole(UserRole $role)
+    public function setRole(UserRole $role = null)
     {
         $this->role = $role;
         return $this;
