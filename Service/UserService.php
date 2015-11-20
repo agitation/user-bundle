@@ -60,10 +60,9 @@ class UserService
         if (!$user)
             throw new UnauthorizedException(Translate::t("Authentication has failed. Please check your user name and your password."));
 
-        $password = $this->securityEncoderFactory->getEncoder($user)
-            ->encodePassword($password, $user->getSalt());
+        $encoder = $this->securityEncoderFactory->getEncoder($user);
 
-        if ($password !== $user->getPassword())
+        if (!$encoder->isPasswordValid($user->getPassword(), $password, $user->getSalt()))
             throw new UnauthorizedException(Translate::t("Authentication has failed. Please check your user name and your password."));
 
         $this->user = $user;
