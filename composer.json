@@ -5,10 +5,10 @@
     "require": {
         "php": ">=5.4.9",
         "symfony/symfony": "2.3.*",
-        "agitation/common": "dev-master",
-        "agitation/intl": "dev-master",
-        "agitation/validation": "dev-master",
-        "agitation/pluggable": "dev-master"
+        "agitation/common-bundle": "dev-master",
+        "agitation/pluggable-bundle": "dev-master",
+        "agitation/intl-bundle": "dev-master",
+        "agitation/validation-bundle": "dev-master"
     },
     "autoload": {
         "psr-4": {
@@ -21,18 +21,5 @@
             "name": "AGITsol GmbH",
             "homepage": "http://www.agitsol.com/"
         }
-    ],
-    "description": "Provides an extendable component for user authentication and authorisation for the Agitation framework.",
-    "keywords": [
-        "agit",
-        "agitation",
-        "tixys",
-        "user",
-        "authentication",
-        "authorisation",
-        "authorization",
-        "roles",
-        "capabilities",
-        "pluggable"
     ]
 }
