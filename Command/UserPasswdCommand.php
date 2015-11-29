@@ -9,13 +9,14 @@
 
 namespace Agit\UserBundle\Command;
 
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Agit\CommonBundle\Command\SingletonCommandTrait;
 use Agit\UserBundle\Entity\User;
 
-class UserPasswdCommand
+class UserPasswdCommand extends ContainerAwareCommand
 {
     use SingletonCommandTrait;
 
