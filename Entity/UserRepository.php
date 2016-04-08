@@ -17,20 +17,6 @@ use Doctrine\ORM\EntityRepository;
 
 class UserRepository extends EntityRepository implements UserProviderInterface
 {
-    private $roleService;
-
-    private $capabilityService;
-
-    public function setRoleService(RoleService $roleService)
-    {
-        $this->roleService = $roleService;
-    }
-
-    public function setCapabilityService(CapabilityService $capabilityService)
-    {
-        $this->capabilityService = $capabilityService;
-    }
-
     public function loadUserByUsername($email)
     {
         $user = $this
