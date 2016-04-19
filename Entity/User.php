@@ -61,13 +61,13 @@ class User implements UserInterface
      *
      * @ORM\ManyToMany(targetEntity="UserCapability")
      */
-    private $capabilityList = [];
+    private $capabilities = [];
 
     public function __construct()
     {
         $this->salt = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
         $this->password = sha1(uniqid(mt_rand(), true));
-        $this->capabilityList = new ArrayCollection();
+        $this->capabilities = new ArrayCollection();
     }
 
     public function equals(UserInterface $user)
@@ -124,7 +124,7 @@ class User implements UserInterface
         }
         else
         {
-            foreach ($this->getCapabilityList()->getValues() as $capability)
+            foreach ($this->getCapabilities()->getValues() as $capability)
             {
                 if ($capability->getId() === $cap)
                 {
@@ -247,17 +247,17 @@ class User implements UserInterface
      */
     public function addCapability(UserCapability $capability)
     {
-        $this->capabilityList[] = $capability;
+        $this->capabilities[] = $capability;
         return $this;
     }
 
     /**
-     * Get CapabilityList
+     * Get Capabilities
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getCapabilityList()
+    public function getCapabilities()
     {
-        return $this->capabilityList;
+        return $this->capabilities;
     }
 }

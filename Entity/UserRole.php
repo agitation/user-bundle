@@ -42,14 +42,14 @@ class UserRole
     /**
      * @ORM\ManyToMany(targetEntity="UserCapability")
      */
-    private $capabilityList = [];
+    private $capabilities = [];
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->capabilityList = new ArrayCollection();
+        $this->capabilities = new ArrayCollection();
     }
 
     public function hasCapability($cap)
@@ -62,7 +62,7 @@ class UserRole
         }
         else
         {
-            foreach ($this->getCapabilityList()->getValues() as $capability)
+            foreach ($this->getCapabilities()->getValues() as $capability)
             {
                 if ($capability->getId() === $cap)
                 {
@@ -100,8 +100,8 @@ class UserRole
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getCapabilityList()
+    public function getCapabilities()
     {
-        return $this->capabilityList;
+        return $this->capabilities;
     }
 }
