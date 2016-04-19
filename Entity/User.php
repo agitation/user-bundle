@@ -27,6 +27,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string",length=70)
+     * @Assert\Length(min=5)
      */
     private $name;
 
@@ -38,16 +39,19 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="boolean")
+     * @Assert\NotNull()
      */
     private $active;
 
     /**
      * @ORM\Column(name="salt",type="string",length=40)
+     * @Assert\Length(min=20)
      */
     private $salt;
 
     /**
      * @ORM\Column(name="password",type="string",length=88)
+     * @Assert\Length(min=30)
      */
     private $password;
 
@@ -59,6 +63,7 @@ class User implements UserInterface
 
     /**
      * @ORM\ManyToOne(targetEntity="UserRole")
+     * @Assert\NotNull()
      */
     private $role;
 
@@ -71,8 +76,6 @@ class User implements UserInterface
 
     public function __construct()
     {
-        $this->salt = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
-        $this->password = sha1(uniqid(mt_rand(), true));
         $this->capabilities = new ArrayCollection();
     }
 
@@ -93,10 +96,6 @@ class User implements UserInterface
 
     public function setPassword($password)
     {
-        // stupidity fallback: make sure it is some sort of a hash
-        if (strlen($password) < 30)
-            throw new InternalErrorException("Password must be encrypted!");
-
         $this->password = $password;
     }
 
