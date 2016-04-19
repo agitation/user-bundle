@@ -52,6 +52,12 @@ class User implements UserInterface
     private $password;
 
     /**
+     * @ORM\OneToOne(targetEntity="UserConfigInterface", mappedBy="user", orphanRemoval=true, cascade={"ALL"})
+     * @Assert\NotNull()
+     */
+    private $userConfig;
+
+    /**
      * @ORM\ManyToOne(targetEntity="UserRole")
      */
     private $role;
@@ -237,6 +243,29 @@ class User implements UserInterface
     public function getRole()
     {
         return $this->role;
+    }
+
+
+    /**
+     * Set Config
+     *
+     * @param UserConfig $config
+     * @return User
+     */
+    public function setConfig(UserConfig $config)
+    {
+        $this->userConfig = $config;
+        return $this;
+    }
+
+    /**
+     * Get Config
+     *
+     * @return UserConfig
+     */
+    public function getConfig()
+    {
+        return $this->userConfig;
     }
 
     /**
