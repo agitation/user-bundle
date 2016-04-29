@@ -10,7 +10,7 @@
 namespace Agit\UserBundle\Service;
 
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Security\Core\SecurityContext;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Encoder\EncoderFactory;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Doctrine\ORM\EntityManager;
@@ -23,7 +23,7 @@ class UserService
 {
     private $session;
 
-    private $securityContext;
+    private $securityTokenStorage;
 
     private $securityEncoderFactory;
 
@@ -36,14 +36,14 @@ class UserService
     public function __construct
     (
         SessionInterface $session,
-        SecurityContext $securityContext,
+        TokenStorage $securityTokenStorage,
         EncoderFactory $securityEncoderFactory,
         EntityManager $entityManager,
         ValidationService $validationService
     )
     {
         $this->session = $session;
-        $this->securityContext = $securityContext;
+        $this->securityTokenStorage = $securityTokenStorage;
         $this->securityEncoderFactory = $securityEncoderFactory;
         $this->entityManager = $entityManager;
         $this->validationService = $validationService;
@@ -72,13 +72,13 @@ class UserService
     {
         $this->authenticate($username, $password);
         $token = new UsernamePasswordToken($this->user, null, 'agitation', $this->user->getRoles());
-        $this->securityContext->setToken($token);
+        $this->securityTokenStorage->setToken($token);
     }
 
     public function logout()
     {
         $this->user = null;
-        $this->securityContext->setToken(null);
+        $this->securityTokenStorage->setToken(null);
         $this->session->invalidate();
     }
 
@@ -88,7 +88,7 @@ class UserService
 
         if ($this->user === false)
         {
-            $securityToken = $this->securityContext->getToken();
+            $securityToken = $this->securityTokenStorage->getToken();
 
             if (is_object($securityToken) && is_callable([$securityToken, 'getUser']))
                 $user = $securityToken->getUser();
