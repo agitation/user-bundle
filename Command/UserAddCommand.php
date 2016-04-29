@@ -36,12 +36,21 @@ class UserAddCommand extends ContainerAwareCommand
 
         $entityManager = $this->getContainer()->get("doctrine.orm.entity_manager");
 
+        // find out which class implements UserConfig
+        $userConfigMetadata = $entityManager->getClassMetadata("Agit\UserBundle\Entity\UserConfigInterface");
+        $userConfigClass = $userConfigMetadata->name;
+
+        // some garbage to fill the password/salt fields. Real values are set through the agit:user:password command.
+        $authGarbage = sha1(microtime(true));
+
         $user = new User();
         $user->setName($input->getArgument("name"));
         $user->setEmail($input->getArgument("email"));
-        $user->setRole($input->getArgument("role"));
+        $user->setRole($entityManager->getReference("AgitUserBundle:UserRole", $input->getArgument('role')));
         $user->setActive(true);
-        $user->setPassword(sha1(microtime(true))); // just some garbage
+        $user->setSalt($authGarbage);
+        $user->setPassword($authGarbage);
+        $user->setConfig($userConfigClass::getDefaultConfig());
 
         $errors = $this->getContainer()->get("validator")->validate($user);
 

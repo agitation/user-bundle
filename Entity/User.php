@@ -248,10 +248,10 @@ class User implements UserInterface
     /**
      * Set Config
      *
-     * @param UserConfig $config
+     * @param UserConfigInterface $config
      * @return User
      */
-    public function setConfig(UserConfig $config)
+    public function setConfig(UserConfigInterface $config)
     {
         $this->userConfig = $config;
         return $this;
@@ -282,7 +282,7 @@ class User implements UserInterface
     /**
      * Get Capabilities
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getCapabilities()
     {

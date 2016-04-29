@@ -4,9 +4,12 @@ namespace Agit\UserBundle\Entity;
 
 interface UserConfigInterface
 {
-    public function getId();
+    /**
+     * expected to return an instance of a default UserConfig
+     *
+     * @return AbstractUserConfig
+     */
+    static public function getDefaultConfig();
 
-//     public function setUser(User $user);
-//
-//     public function getUser();
+    public function getId();
 }
