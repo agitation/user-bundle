@@ -57,13 +57,13 @@ class User implements UserInterface
 
     /**
      * @ORM\OneToOne(targetEntity="UserConfigInterface", mappedBy="user", orphanRemoval=true, cascade={"ALL"})
-     * @Assert\NotNull()
+     * @Assert\Valid
      */
     private $userConfig;
 
     /**
      * @ORM\ManyToOne(targetEntity="UserRole")
-     * @Assert\NotNull()
+     * @Assert\NotNull
      */
     private $role;
 

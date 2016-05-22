@@ -78,7 +78,7 @@ class UserRole
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -88,7 +88,7 @@ class UserRole
     /**
      * Get isSuper
      *
-     * @return boolean 
+     * @return boolean
      */
     public function isSuper()
     {
@@ -98,7 +98,7 @@ class UserRole
     /**
      * Get Capability
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getCapabilities()
     {
