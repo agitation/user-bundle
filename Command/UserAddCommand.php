@@ -51,6 +51,7 @@ class UserAddCommand extends ContainerAwareCommand
         $user->setSalt($authGarbage);
         $user->setPassword($authGarbage);
         $user->setConfig($userConfigClass::getDefaultConfig());
+        $user->getConfig()->setUser($user);
 
         $errors = $this->getContainer()->get("validator")->validate($user);
 
