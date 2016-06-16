@@ -27,7 +27,7 @@ class UserAddCommand extends ContainerAwareCommand
             ->setDescription("Add a user to the users database")
             ->addArgument("email", InputArgument::REQUIRED, "e-mail address.")
             ->addArgument("name", InputArgument::REQUIRED, "full name (use quotes if you want to use spaces).")
-            ->addArgument("role", InputArgument::REQUIRED, "user role identifier.");
+            ->addArgument("role", InputArgument::OPTIONAL, "user role identifier.");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -43,10 +43,12 @@ class UserAddCommand extends ContainerAwareCommand
         // some garbage to fill the password/salt fields. Real values are set through the agit:user:password command.
         $authGarbage = sha1(microtime(true));
 
+        $role = $input->getArgument("role");
+
         $user = new User();
         $user->setName($input->getArgument("name"));
         $user->setEmail($input->getArgument("email"));
-        $user->setRole($entityManager->getReference("AgitUserBundle:UserRole", $input->getArgument('role')));
+        $user->setRole($role ? $entityManager->getReference("AgitUserBundle:UserRole", $role) : null);
         $user->setActive(true);
         $user->setSalt($authGarbage);
         $user->setPassword($authGarbage);
