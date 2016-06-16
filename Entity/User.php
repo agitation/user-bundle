@@ -63,12 +63,12 @@ class User implements UserInterface
 
     /**
      * @ORM\ManyToOne(targetEntity="UserRole")
-     * @Assert\NotNull
+     * @Assert\Valid
      */
     private $role;
 
     /**
-     * Extra capabilities, i.e. which are not part of the user's Role
+     * Extra capabilities, i.e. which are not part of the user’s Role
      *
      * @ORM\ManyToMany(targetEntity="UserCapability")
      */
@@ -106,7 +106,7 @@ class User implements UserInterface
 
     public function getRoles() // the one required by Symfony, useless for us
     {
-        return ['user'];
+        return ["user"];
     }
 
     public function eraseCredentials()
@@ -116,14 +116,14 @@ class User implements UserInterface
 
     public function hasRole($role)
     {
-        return ($role === $this->getRole()->getId());
+        return ($this->role && $role === $this->role->getId());
     }
 
     public function hasCapability($cap)
     {
         $has = false;
 
-        if ($this->getRole()->isSuper() || $this->getRole()->hasCapability($cap))
+        if ($this->role && ($this->role->isSuper() || $this->role->hasCapability($cap)))
         {
             $has = true;
         }
