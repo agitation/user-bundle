@@ -14,7 +14,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Agit\CommonBundle\Command\SingletonCommandTrait;
-use Agit\UserBundle\Entity\User;
 
 class UserAddCommand extends ContainerAwareCommand
 {
@@ -34,32 +33,13 @@ class UserAddCommand extends ContainerAwareCommand
     {
         if (!$this->flock(__FILE__)) return;
 
+        $user = $this->getContainer()->get("agit.user")->createUser(
+            $input->getArgument("name"),
+            $input->getArgument("email"),
+            $input->getArgument("role")
+        );
+
         $entityManager = $this->getContainer()->get("doctrine.orm.entity_manager");
-
-        // find out which class implements UserConfig
-        $userConfigMetadata = $entityManager->getClassMetadata("Agit\UserBundle\Entity\UserConfigInterface");
-        $userConfigClass = $userConfigMetadata->name;
-
-        // some garbage to fill the password/salt fields. Real values are set through the agit:user:password command.
-        $authGarbage = sha1(microtime(true));
-
-        $role = $input->getArgument("role");
-
-        $user = new User();
-        $user->setName($input->getArgument("name"));
-        $user->setEmail($input->getArgument("email"));
-        $user->setRole($role ? $entityManager->getReference("AgitUserBundle:UserRole", $role) : null);
-        $user->setActive(true);
-        $user->setSalt($authGarbage);
-        $user->setPassword($authGarbage);
-        $user->setConfig($userConfigClass::getDefaultConfig());
-        $user->getConfig()->setUser($user);
-
-        $errors = $this->getContainer()->get("validator")->validate($user);
-
-        if (count($errors) > 0)
-            throw new \Exception((string)$errors);
-
         $entityManager->persist($user);
         $entityManager->flush();
     }

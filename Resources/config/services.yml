@@ -2,4 +2,4 @@ services:
 
     agit.user:
         class: Agit\UserBundle\Service\UserService
-        arguments: [@session, @security.token_storage, @security.encoder_factory, @doctrine.orm.entity_manager, @agit.validation]
+        arguments: [@session, @security.token_storage, @security.encoder_factory, @doctrine.orm.entity_manager, @validator, @agit.validation]
