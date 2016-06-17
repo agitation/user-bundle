@@ -18,7 +18,7 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Doctrine\ORM\EntityManager;
 use Agit\IntlBundle\Translate;
 use Agit\ValidationBundle\Service\ValidationService;
-use Agit\UserBundle\Exception\UnauthorizedException;
+use Agit\UserBundle\Exception\AuthenticationFailedException;
 use Agit\UserBundle\Entity\User;
 use Symfony\Component\Validator\Validator\RecursiveValidator;
 use Symfony\Component\Validator\Constraints\Valid;
@@ -60,18 +60,18 @@ class UserService
     public function authenticate($username, $password)
     {
         if (!$this->validationService->isValid("email", $username))
-            throw new UnauthorizedException(Translate::t("Authentication has failed. Please check your user name and your password."));
+            throw new AuthenticationFailedException(Translate::t("Authentication has failed. Please check your user name and your password."));
 
         $user = $this->entityManager->getRepository("AgitUserBundle:User")
             ->findOneBy(["email" => $username, "active" => true]);
 
         if (!$user)
-            throw new UnauthorizedException(Translate::t("Authentication has failed. Please check your user name and your password."));
+            throw new AuthenticationFailedException(Translate::t("Authentication has failed. Please check your user name and your password."));
 
         $encoder = $this->securityEncoderFactory->getEncoder($user);
 
         if (!$encoder->isPasswordValid($user->getPassword(), $password, $user->getSalt()))
-            throw new UnauthorizedException(Translate::t("Authentication has failed. Please check your user name and your password."));
+            throw new AuthenticationFailedException(Translate::t("Authentication has failed. Please check your user name and your password."));
 
         $this->user = $user;
     }
