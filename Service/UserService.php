@@ -118,7 +118,7 @@ class UserService
         $ivSize = mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CFB);
         $iv = mcrypt_create_iv($ivSize,  MCRYPT_RAND);
         $salt = sha1(microtime(true) . $iv);
-        $randPass = StringHelper::createRandomString(20);
+        $randPass = StringHelper::createRandomString(15) . "Aa1"; // suffix needed to ensure PW policy compliance
 
         $user = new User();
         $user->setName($name);
