@@ -32,7 +32,7 @@ class User implements UserInterface
     private $name;
 
     /**
-     * @ORM\Column(type="string",length=70,unique=true)
+     * @ORM\Column(type="string",length=70)
      * @Assert\Email()
      */
     private $email;
