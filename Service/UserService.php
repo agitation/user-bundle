@@ -20,7 +20,7 @@ use Agit\IntlBundle\Translate;
 use Agit\ValidationBundle\Service\ValidationService;
 use Agit\UserBundle\Exception\AuthenticationFailedException;
 use Agit\UserBundle\Entity\User;
-use Symfony\Component\Validator\Validator\RecursiveValidator;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Validator\Constraints\Valid;
 
 class UserService
@@ -45,7 +45,7 @@ class UserService
         TokenStorage $securityTokenStorage,
         EncoderFactory $securityEncoderFactory,
         EntityManager $entityManager,
-        RecursiveValidator $entityValidator,
+        ValidatorInterface $entityValidator,
         ValidationService $validationService
     )
     {
@@ -131,7 +131,7 @@ class UserService
 
         $this->setPassword($user, $randPass);
 
-        $errors = $this->entityValidator->validate($user, new Valid(["traverse" => true, "deep" => true]));
+        $errors = $this->entityValidator->validate($user, new Valid(["traverse" => true]));
 
         if (count($errors) > 0)
             throw new InvalidParametersException((string)$errors);
