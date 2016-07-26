@@ -5,18 +5,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "nplurals=2; plural=(n != 1);\n"
 
-#: @AgitUserBundle/EventListener/UserRoleSeedData.php:23
+#: @AgitUserBundle/Plugin/UserRoleSeedPlugin.php:30
 msgctxt "user role"
 msgid "Administrator"
 msgstr ""
 
-#: @AgitUserBundle/EventListener/UserRoleSeedData.php:24
-msgctxt "user role"
-msgid "Member"
-msgstr ""
-
-#: @AgitUserBundle/Service/UserService.php:44
-#: @AgitUserBundle/Service/UserService.php:50
-#: @AgitUserBundle/Service/UserService.php:56
+#: @AgitUserBundle/Service/UserService.php:63
+#: @AgitUserBundle/Service/UserService.php:69
+#: @AgitUserBundle/Service/UserService.php:74
 msgid "Authentication has failed. Please check your user name and your password."
 msgstr ""
