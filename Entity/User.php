@@ -14,16 +14,19 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Agit\CommonBundle\Entity\DeletableInterface;
+use Agit\CommonBundle\Entity\DeletableTrait;
 use Agit\CommonBundle\Entity\GeneratedIdentityAwareTrait;
 use Agit\CommonBundle\Exception\InternalErrorException;
 
 /**
  * @ORM\Entity(repositoryClass="Agit\UserBundle\Entity\UserRepository")
- * @ORM\Table(indexes={@ORM\Index(name="idx_email_active",columns={"email","active"})})
+ * @ORM\Table(indexes={@ORM\Index(name="idx_email_deleted",columns={"email","deleted"})})
  */
-class User implements UserInterface
+class User implements UserInterface, DeletableInterface
 {
     use GeneratedIdentityAwareTrait;
+    use DeletableTrait;
 
     /**
      * @ORM\Column(type="string",length=70)
@@ -36,12 +39,6 @@ class User implements UserInterface
      * @Assert\Email()
      */
     private $email;
-
-    /**
-     * @ORM\Column(type="boolean")
-     * @Assert\NotNull()
-     */
-    private $active;
 
     /**
      * @ORM\Column(name="salt",type="string",length=40)
@@ -183,33 +180,13 @@ class User implements UserInterface
     }
 
     /**
-     * Set active
-     *
-     * @param smallint $active
-     */
-    public function setActive($active)
-    {
-        $this->active = $active;
-    }
-
-    /**
-     * Get active
-     *
-     * @return smallint
-     */
-    public function getActive()
-    {
-        return $this->active;
-    }
-
-    /**
      * is active
      *
      * @return smallint
      */
     public function isActive()
     {
-        return $this->active;
+        return !$this->deleted;
     }
 
     /**

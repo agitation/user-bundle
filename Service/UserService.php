@@ -63,7 +63,7 @@ class UserService
             throw new AuthenticationFailedException(Translate::t("Authentication has failed. Please check your user name and your password."));
 
         $user = $this->entityManager->getRepository("AgitUserBundle:User")
-            ->findOneBy(["email" => $username, "active" => true]);
+            ->findOneBy(["email" => $username, "deleted" => false]);
 
         if (!$user)
             throw new AuthenticationFailedException(Translate::t("Authentication has failed. Please check your user name and your password."));
@@ -124,7 +124,7 @@ class UserService
         $user->setName($name);
         $user->setEmail($email);
         $user->setRole($role ? $this->entityManager->getReference("AgitUserBundle:UserRole", $role) : null);
-        $user->setActive($active);
+        $user->setDeleted(!$active);
         $user->setSalt($salt);
         $user->setConfig($userConfigClass::getDefaultConfig());
         $user->getConfig()->setUser($user);
