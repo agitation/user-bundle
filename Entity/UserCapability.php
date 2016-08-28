@@ -35,10 +35,10 @@ class UserCapability
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
-        return Translate::x($this->name, 'user capability');
+        return Translate::x("user capability", $this->name);
     }
 }

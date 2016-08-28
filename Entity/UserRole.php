@@ -82,7 +82,7 @@ class UserRole
      */
     public function getName()
     {
-        return Translate::x($this->name, 'user role');
+        return Translate::x("user role", $this->name);
     }
 
     /**
