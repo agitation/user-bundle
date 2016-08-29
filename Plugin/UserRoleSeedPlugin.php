@@ -27,7 +27,7 @@ class UserRoleSeedPlugin implements SeedPluginInterface
 
         $roles = [
             // this is a "super user" role, i.e. has automatically *all* capabilities
-            [ "id" => "administrator", "name" => Translate::noopX("Administrator", "user role"), "isSuper" => true ],
+            [ "id" => "administrator", "name" => Translate::noopX("user role", "Administrator"), "isSuper" => true ]
         ];
 
         foreach ($roles as $role)

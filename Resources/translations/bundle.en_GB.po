@@ -1,15 +1,17 @@
 msgid ""
 msgstr ""
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"nplurals=2; plural=(n != 1);\n"
+"Language: en_GB\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #: @AgitUserBundle/Plugin/UserRoleSeedPlugin.php:30
-msgctxt "user role"
-msgid "Administrator"
+#: @AgitUserBundle/Plugin/UserRoleSeedPlugin.php:30
+msgctxt "Administrator"
+msgid "user role"
 msgstr ""
 
+#: @AgitUserBundle/Service/UserService.php:63
+#: @AgitUserBundle/Service/UserService.php:69
+#: @AgitUserBundle/Service/UserService.php:74
 #: @AgitUserBundle/Service/UserService.php:63
 #: @AgitUserBundle/Service/UserService.php:69
 #: @AgitUserBundle/Service/UserService.php:74
