@@ -9,7 +9,7 @@
 
 namespace Agit\UserBundle\Service;
 
-use Agit\CommonBundle\Helper\StringHelper;
+use Agit\BaseBundle\Helper\StringHelper;
 use Agit\UserBundle\Exception\InvalidParametersException;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;

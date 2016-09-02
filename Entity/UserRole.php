@@ -12,8 +12,8 @@ namespace Agit\UserBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
-use Agit\CommonBundle\Entity\IdentityAwareTrait;
-use Agit\CommonBundle\Exception\InternalErrorException;
+use Agit\BaseBundle\Entity\IdentityAwareTrait;
+use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\IntlBundle\Translate;
 
 /**

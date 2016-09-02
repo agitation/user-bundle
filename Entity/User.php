@@ -14,10 +14,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Agit\CommonBundle\Entity\DeletableInterface;
-use Agit\CommonBundle\Entity\DeletableTrait;
-use Agit\CommonBundle\Entity\GeneratedIdentityAwareTrait;
-use Agit\CommonBundle\Exception\InternalErrorException;
+use Agit\BaseBundle\Entity\DeletableInterface;
+use Agit\BaseBundle\Entity\DeletableTrait;
+use Agit\BaseBundle\Entity\GeneratedIdentityAwareTrait;
+use Agit\BaseBundle\Exception\InternalErrorException;
 
 /**
  * @ORM\Entity(repositoryClass="Agit\UserBundle\Entity\UserRepository")

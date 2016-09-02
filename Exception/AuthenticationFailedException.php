@@ -9,7 +9,7 @@
 
 namespace Agit\UserBundle\Exception;
 
-use Agit\CommonBundle\Exception\AgitException;
+use Agit\BaseBundle\Exception\AgitException;
 
 /**
  * The authentication information is invalid. This counts as a “bad request”,
