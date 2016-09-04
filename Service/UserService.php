@@ -9,14 +9,14 @@
 
 namespace Agit\UserBundle\Service;
 
-use Agit\BaseBundle\Helper\StringHelper;
+use Agit\BaseBundle\Tool\StringHelper;
 use Agit\UserBundle\Exception\InvalidParametersException;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Encoder\EncoderFactory;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Doctrine\ORM\EntityManager;
-use Agit\IntlBundle\Translate;
+use Agit\BaseBundle\Tool\Translate;
 use Agit\ValidationBundle\Service\ValidationService;
 use Agit\UserBundle\Exception\AuthenticationFailedException;
 use Agit\UserBundle\Entity\User;
