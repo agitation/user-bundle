@@ -10,9 +10,9 @@
 namespace Agit\UserBundle\Plugin;
 
 use Agit\BaseBundle\Tool\Translate;
-use Agit\PluggableBundle\Strategy\Seed\SeedPluginInterface;
-use Agit\PluggableBundle\Strategy\Seed\SeedPlugin;
-use Agit\PluggableBundle\Strategy\Seed\SeedEntry;
+use Agit\BaseBundle\Pluggable\Seed\SeedPluginInterface;
+use Agit\BaseBundle\Pluggable\Seed\SeedPlugin;
+use Agit\BaseBundle\Pluggable\Seed\SeedEntry;
 
 /**
  * @SeedPlugin(entity="AgitUserBundle:UserRole")
