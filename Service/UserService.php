@@ -17,7 +17,7 @@ use Symfony\Component\Security\Core\Encoder\EncoderFactory;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Doctrine\ORM\EntityManager;
 use Agit\BaseBundle\Tool\Translate;
-use Agit\ValidationBundle\Service\ValidationService;
+use Agit\BaseBundle\Service\ValidationService;
 use Agit\UserBundle\Exception\AuthenticationFailedException;
 use Agit\UserBundle\Entity\User;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
