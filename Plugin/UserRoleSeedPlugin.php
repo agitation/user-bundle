@@ -9,7 +9,7 @@
 
 namespace Agit\UserBundle\Plugin;
 
-use Agit\BaseBundle\Tool\Translate;
+use Agit\IntlBundle\Tool\Translate;
 use Agit\BaseBundle\Pluggable\Seed\SeedPluginInterface;
 use Agit\BaseBundle\Pluggable\Seed\SeedPlugin;
 use Agit\BaseBundle\Pluggable\Seed\SeedEntry;

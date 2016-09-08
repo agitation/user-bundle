@@ -12,7 +12,7 @@ namespace Agit\UserBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Agit\BaseBundle\Entity\IdentityAwareTrait;
-use Agit\BaseBundle\Tool\Translate;
+use Agit\IntlBundle\Tool\Translate;
 
 /**
  * @ORM\Entity
