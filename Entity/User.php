@@ -1,23 +1,21 @@
 <?php
-/**
- * @package    agitation/user
- * @link       http://github.com/agitation/AgitUserBundle
- * @author     Alex Günsche <http://www.agitsol.com/>
- * @copyright  2012-2015 AGITsol GmbH
+
+/*
+ * @package    agitation/user-bundle
+ * @link       http://github.com/agitation/user-bundle
+ * @author     Alexander Günsche
  * @license    http://opensource.org/licenses/MIT
  */
 
 namespace Agit\UserBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Bridge\Doctrine\Validator\Constraints as DoctrineAssert;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Agit\BaseBundle\Entity\DeletableInterface;
 use Agit\BaseBundle\Entity\DeletableTrait;
 use Agit\BaseBundle\Entity\GeneratedIdentityAwareTrait;
-use Agit\BaseBundle\Exception\InternalErrorException;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="Agit\UserBundle\Entity\UserRepository")
@@ -65,7 +63,7 @@ class User implements UserInterface, DeletableInterface
     private $role;
 
     /**
-     * Extra capabilities, i.e. which are not part of the user’s Role
+     * Extra capabilities, i.e. which are not part of the user’s Role.
      *
      * @ORM\ManyToMany(targetEntity="UserCapability")
      */
@@ -108,28 +106,22 @@ class User implements UserInterface, DeletableInterface
 
     public function eraseCredentials()
     {
-
     }
 
     public function hasRole($role)
     {
-        return ($this->role && $role === $this->role->getId());
+        return $this->role && $role === $this->role->getId();
     }
 
     public function hasCapability($cap)
     {
         $has = false;
 
-        if ($this->role && ($this->role->isSuper() || $this->role->hasCapability($cap)))
-        {
+        if ($this->role && ($this->role->isSuper() || $this->role->hasCapability($cap))) {
             $has = true;
-        }
-        else
-        {
-            foreach ($this->getCapabilities()->getValues() as $capability)
-            {
-                if ($capability->getId() === $cap)
-                {
+        } else {
+            foreach ($this->getCapabilities()->getValues() as $capability) {
+                if ($capability->getId() === $cap) {
                     $has = true;
                     break;
                 }
@@ -140,7 +132,7 @@ class User implements UserInterface, DeletableInterface
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      */
@@ -150,7 +142,7 @@ class User implements UserInterface, DeletableInterface
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -160,7 +152,7 @@ class User implements UserInterface, DeletableInterface
     }
 
     /**
-     * Set email
+     * Set email.
      *
      * @param string $email
      */
@@ -170,7 +162,7 @@ class User implements UserInterface, DeletableInterface
     }
 
     /**
-     * Get email
+     * Get email.
      *
      * @return string
      */
@@ -180,17 +172,17 @@ class User implements UserInterface, DeletableInterface
     }
 
     /**
-     * is active
+     * is active.
      *
      * @return smallint
      */
     public function isActive()
     {
-        return !$this->deleted;
+        return ! $this->deleted;
     }
 
     /**
-     * Set salt
+     * Set salt.
      *
      * @param string $salt
      */
@@ -200,19 +192,21 @@ class User implements UserInterface, DeletableInterface
     }
 
     /**
-     * Set Role
+     * Set Role.
      *
      * @param UserRole $role
+     *
      * @return User
      */
     public function setRole(UserRole $role = null)
     {
         $this->role = $role;
+
         return $this;
     }
 
     /**
-     * Get Role
+     * Get Role.
      *
      * @return UserRole
      */
@@ -221,21 +215,22 @@ class User implements UserInterface, DeletableInterface
         return $this->role;
     }
 
-
     /**
-     * Set Config
+     * Set Config.
      *
      * @param UserConfigInterface $config
+     *
      * @return User
      */
     public function setConfig(UserConfigInterface $config)
     {
         $this->userConfig = $config;
+
         return $this;
     }
 
     /**
-     * Get Config
+     * Get Config.
      *
      * @return UserConfig
      */
@@ -245,19 +240,21 @@ class User implements UserInterface, DeletableInterface
     }
 
     /**
-     * Add Capability
+     * Add Capability.
      *
      * @param UserCapability $capability
+     *
      * @return User
      */
     public function addCapability(UserCapability $capability)
     {
         $this->capabilities[] = $capability;
+
         return $this;
     }
 
     /**
-     * Get Capabilities
+     * Get Capabilities.
      *
      * @return \Doctrine\Common\Collections\Collection
      */

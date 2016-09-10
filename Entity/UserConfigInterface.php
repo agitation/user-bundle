@@ -1,15 +1,22 @@
 <?php
 
+/*
+ * @package    agitation/user-bundle
+ * @link       http://github.com/agitation/user-bundle
+ * @author     Alexander Günsche
+ * @license    http://opensource.org/licenses/MIT
+ */
+
 namespace Agit\UserBundle\Entity;
 
 interface UserConfigInterface
 {
     /**
-     * expected to return an instance of a default UserConfig
+     * expected to return an instance of a default UserConfig.
      *
      * @return AbstractUserConfig
      */
-    static public function getDefaultConfig();
+    public static function getDefaultConfig();
 
     public function getId();
 }

@@ -1,9 +1,9 @@
 <?php
-/**
- * @package    agitation/user
- * @link       http://github.com/agitation/AgitUserBundle
- * @author     Alex Günsche <http://www.agitsol.com/>
- * @copyright  2012-2015 AGITsol GmbH
+
+/*
+ * @package    agitation/user-bundle
+ * @link       http://github.com/agitation/user-bundle
+ * @author     Alexander Günsche
  * @license    http://opensource.org/licenses/MIT
  */
 

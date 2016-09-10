@@ -1,10 +1,17 @@
 <?php
 
+/*
+ * @package    agitation/user-bundle
+ * @link       http://github.com/agitation/user-bundle
+ * @author     Alexander Günsche
+ * @license    http://opensource.org/licenses/MIT
+ */
+
 namespace Agit\UserBundle\Entity;
 
+use Agit\BaseBundle\Entity\GeneratedIdentityAwareTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use Agit\BaseBundle\Entity\GeneratedIdentityAwareTrait;
 
 /**
  * @ORM\MappedSuperclass
@@ -21,7 +28,7 @@ abstract class AbstractUserConfig implements UserConfigInterface
     protected $user;
 
     /**
-     * Set user
+     * Set user.
      *
      * @param User $user
      *
@@ -30,11 +37,12 @@ abstract class AbstractUserConfig implements UserConfigInterface
     public function setUser(User $user)
     {
         $this->user = $user;
+
         return $this;
     }
 
     /**
-     * Get user
+     * Get user.
      *
      * @return User
      */

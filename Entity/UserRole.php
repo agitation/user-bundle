@@ -1,20 +1,18 @@
 <?php
-/**
- * @package    agitation/user
- * @link       http://github.com/agitation/AgitUserBundle
- * @author     Alex Günsche <http://www.agitsol.com/>
- * @copyright  2012-2015 AGITsol GmbH
+
+/*
+ * @package    agitation/user-bundle
+ * @link       http://github.com/agitation/user-bundle
+ * @author     Alexander Günsche
  * @license    http://opensource.org/licenses/MIT
  */
 
 namespace Agit\UserBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\Validator\Constraints as Assert;
 use Agit\BaseBundle\Entity\IdentityAwareTrait;
-use Agit\BaseBundle\Exception\InternalErrorException;
 use Agit\IntlBundle\Tool\Translate;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
@@ -45,7 +43,7 @@ class UserRole
     private $capabilities = [];
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -56,16 +54,11 @@ class UserRole
     {
         $has = false;
 
-        if ($this->isSuper())
-        {
+        if ($this->isSuper()) {
             $has = true;
-        }
-        else
-        {
-            foreach ($this->getCapabilities()->getValues() as $capability)
-            {
-                if ($capability->getId() === $cap)
-                {
+        } else {
+            foreach ($this->getCapabilities()->getValues() as $capability) {
+                if ($capability->getId() === $cap) {
                     $has = true;
                     break;
                 }
@@ -76,7 +69,7 @@ class UserRole
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -86,9 +79,9 @@ class UserRole
     }
 
     /**
-     * Get isSuper
+     * Get isSuper.
      *
-     * @return boolean
+     * @return bool
      */
     public function isSuper()
     {
@@ -96,7 +89,7 @@ class UserRole
     }
 
     /**
-     * Get Capability
+     * Get Capability.
      *
      * @return \Doctrine\Common\Collections\Collection
      */

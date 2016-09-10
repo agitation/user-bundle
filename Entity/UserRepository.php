@@ -1,19 +1,19 @@
 <?php
-/**
- * @package    agitation/user
- * @link       http://github.com/agitation/AgitUserBundle
- * @author     Alex Günsche <http://www.agitsol.com/>
- * @copyright  2012-2015 AGITsol GmbH
+
+/*
+ * @package    agitation/user-bundle
+ * @link       http://github.com/agitation/user-bundle
+ * @author     Alexander Günsche
  * @license    http://opensource.org/licenses/MIT
  */
 
 namespace Agit\UserBundle\Entity;
 
+use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
-use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-use Doctrine\ORM\EntityRepository;
 
 class UserRepository extends EntityRepository implements UserProviderInterface
 {
@@ -28,15 +28,16 @@ class UserRepository extends EntityRepository implements UserProviderInterface
             ->setMaxResults(1)
             ->getQuery()->getOneOrNullResult();
 
-        if (!$user)
+        if (! $user) {
             throw new UsernameNotFoundException("No user was found.");
+        }
 
         return $user;
     }
 
     public function userExists($email)
     {
-        return (bool)$this
+        return (bool) $this
             ->createQueryBuilder('u')
             ->where('u.email = :email')
             ->setParameter('email', $email)
@@ -48,8 +49,9 @@ class UserRepository extends EntityRepository implements UserProviderInterface
     {
         $class = get_class($user);
 
-        if (!$this->supportsClass($class))
+        if (! $this->supportsClass($class)) {
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', $class));
+        }
 
         return $this->find($user->getId());
     }

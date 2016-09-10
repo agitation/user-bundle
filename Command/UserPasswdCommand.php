@@ -1,19 +1,19 @@
 <?php
-/**
- * @package    agitation/user
- * @link       http://github.com/agitation/AgitUserBundle
- * @author     Alex Günsche <http://www.agitsol.com/>
- * @copyright  2012-2015 AGITsol GmbH
+
+/*
+ * @package    agitation/user-bundle
+ * @link       http://github.com/agitation/user-bundle
+ * @author     Alexander Günsche
  * @license    http://opensource.org/licenses/MIT
  */
 
 namespace Agit\UserBundle\Command;
 
+use Agit\BaseBundle\Command\SingletonCommandTrait;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputArgument;
-use Agit\BaseBundle\Command\SingletonCommandTrait;
 
 class UserPasswdCommand extends ContainerAwareCommand
 {
@@ -29,13 +29,16 @@ class UserPasswdCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (!$this->flock(__FILE__)) return;
+        if (! $this->flock(__FILE__)) {
+            return;
+        }
 
         $entityManager = $this->getContainer()->get("doctrine.orm.entity_manager");
         $user = $entityManager->getRepository("AgitUserBundle:User")->findOneBy(["email" => $input->getArgument("email")]);
 
-        if (!$user)
+        if (! $user) {
             throw new \Exception("User not found.");
+        }
 
         $dialog = $this->getHelper("dialog");
         $password1 = $dialog->askHiddenResponse($output, sprintf("New password for %s: ", $user->getName()));

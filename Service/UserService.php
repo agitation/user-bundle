@@ -1,27 +1,27 @@
 <?php
-/**
- * @package    agitation/user
- * @link       http://github.com/agitation/AgitUserBundle
- * @author     Alex Günsche <http://www.agitsol.com/>
- * @copyright  2012-2015 AGITsol GmbH
+
+/*
+ * @package    agitation/user-bundle
+ * @link       http://github.com/agitation/user-bundle
+ * @author     Alexander Günsche
  * @license    http://opensource.org/licenses/MIT
  */
 
 namespace Agit\UserBundle\Service;
 
 use Agit\BaseBundle\Tool\StringHelper;
+use Agit\IntlBundle\Tool\Translate;
+use Agit\UserBundle\Entity\User;
+use Agit\UserBundle\Exception\AuthenticationFailedException;
 use Agit\UserBundle\Exception\InvalidParametersException;
+use Agit\ValidationBundle\ValidationService;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
-use Symfony\Component\Security\Core\Encoder\EncoderFactory;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
-use Doctrine\ORM\EntityManager;
-use Agit\IntlBundle\Tool\Translate;
-use Agit\ValidationBundle\ValidationService;
-use Agit\UserBundle\Exception\AuthenticationFailedException;
-use Agit\UserBundle\Entity\User;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Security\Core\Encoder\EncoderFactory;
 use Symfony\Component\Validator\Constraints\Valid;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UserService
 {
@@ -39,16 +39,14 @@ class UserService
 
     private $user = false;
 
-    public function __construct
-    (
+    public function __construct(
         SessionInterface $session,
         TokenStorage $securityTokenStorage,
         EncoderFactory $securityEncoderFactory,
         EntityManager $entityManager,
         ValidatorInterface $entityValidator,
         ValidationService $validationService
-    )
-    {
+    ) {
         $this->session = $session;
         $this->securityTokenStorage = $securityTokenStorage;
         $this->securityEncoderFactory = $securityEncoderFactory;
@@ -59,19 +57,22 @@ class UserService
 
     public function authenticate($username, $password)
     {
-        if (!$this->validationService->isValid("email", $username))
+        if (! $this->validationService->isValid("email", $username)) {
             throw new AuthenticationFailedException(Translate::t("Authentication has failed. Please check your user name and your password."));
+        }
 
         $user = $this->entityManager->getRepository("AgitUserBundle:User")
             ->findOneBy(["email" => $username, "deleted" => false]);
 
-        if (!$user)
+        if (! $user) {
             throw new AuthenticationFailedException(Translate::t("Authentication has failed. Please check your user name and your password."));
+        }
 
         $encoder = $this->securityEncoderFactory->getEncoder($user);
 
-        if (!$encoder->isPasswordValid($user->getPassword(), $password, $user->getSalt()))
+        if (! $encoder->isPasswordValid($user->getPassword(), $password, $user->getSalt())) {
             throw new AuthenticationFailedException(Translate::t("Authentication has failed. Please check your user name and your password."));
+        }
 
         $this->user = $user;
     }
@@ -94,8 +95,7 @@ class UserService
     {
         $user = null;
 
-        if ($this->user === false)
-        {
+        if ($this->user === false) {
             $user = $this->securityTokenStorage->getToken()->getUser();
             $this->user = ($user instanceof User) ? $user : null;
         }
@@ -106,7 +106,8 @@ class UserService
     public function currentUserCan($cap)
     {
         $user = $this->getCurrentUser();
-        return ($user && $user->hasCapability($cap));
+
+        return $user && $user->hasCapability($cap);
     }
 
     public function createUser($name, $email, $role = null, $active = true)
@@ -124,7 +125,7 @@ class UserService
         $user->setName($name);
         $user->setEmail($email);
         $user->setRole($role ? $this->entityManager->getReference("AgitUserBundle:UserRole", $role) : null);
-        $user->setDeleted(!$active);
+        $user->setDeleted(! $active);
         $user->setSalt($salt);
         $user->setConfig($userConfigClass::getDefaultConfig());
         $user->getConfig()->setUser($user);
@@ -133,8 +134,9 @@ class UserService
 
         $errors = $this->entityValidator->validate($user, new Valid(["traverse" => true]));
 
-        if (count($errors) > 0)
-            throw new InvalidParametersException((string)$errors);
+        if (count($errors) > 0) {
+            throw new InvalidParametersException((string) $errors);
+        }
 
         return $user;
     }
