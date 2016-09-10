@@ -3,3 +3,8 @@ services:
     agit.user:
         class: Agit\UserBundle\Service\UserService
         arguments: [@session, @security.token_storage, @security.encoder_factory, @doctrine.orm.entity_manager, @validator, @agit.validation]
+
+    agit.seed.userrole:
+        private: true
+        class: Agit\UserBundle\EventListener\UserRoleSeed
+        tags: [{ name: kernel.event_listener, event: agit.seed, method: registerSeed }]

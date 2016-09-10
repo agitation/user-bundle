@@ -1,11 +1,11 @@
 {
     "name": "agitation/user-bundle",
     "type": "symfony-bundle",
-    "minimum-stability": "dev",
     "require": {
         "php": ">=5.4.9",
         "symfony/symfony": "2.8.*",
-        "agitation/base-bundle": "dev-master"
+        "agitation/base-bundle": "dev-master",
+        "agitation/seed-bundle": "dev-master"
     },
     "autoload": {
         "psr-4": {
