@@ -9,19 +9,17 @@
 
 namespace Agit\UserBundle\Entity;
 
-use Agit\BaseBundle\Entity\DeletableInterface;
 use Agit\BaseBundle\Entity\DeletableTrait;
+use Agit\BaseBundle\Entity\DeletableInterface;
 use Agit\BaseBundle\Entity\GeneratedIdentityAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="Agit\UserBundle\Entity\UserRepository")
- * @ORM\Table(indexes={@ORM\Index(name="idx_email_deleted",columns={"email","deleted"})})
+ * @ORM\MappedSuperclass
  */
-class User implements UserInterface, DeletableInterface
+abstract class AbstractUser implements UserInterface, DeletableInterface
 {
     use GeneratedIdentityAwareTrait;
     use DeletableTrait;
@@ -33,7 +31,7 @@ class User implements UserInterface, DeletableInterface
     private $name;
 
     /**
-     * @ORM\Column(type="string",length=70)
+     * @ORM\Column(type="string", length=70, nullable=true, unique=true)
      * @Assert\Email()
      */
     private $email;
@@ -49,12 +47,6 @@ class User implements UserInterface, DeletableInterface
      * @Assert\Length(min=30)
      */
     private $password;
-
-    /**
-     * @ORM\OneToOne(targetEntity="UserConfigInterface", mappedBy="user", orphanRemoval=true, cascade={"ALL"})
-     * @Assert\Valid
-     */
-    private $userConfig;
 
     /**
      * @ORM\ManyToOne(targetEntity="UserRole")
@@ -213,30 +205,6 @@ class User implements UserInterface, DeletableInterface
     public function getRole()
     {
         return $this->role;
-    }
-
-    /**
-     * Set Config.
-     *
-     * @param UserConfigInterface $config
-     *
-     * @return User
-     */
-    public function setConfig(UserConfigInterface $config)
-    {
-        $this->userConfig = $config;
-
-        return $this;
-    }
-
-    /**
-     * Get Config.
-     *
-     * @return UserConfig
-     */
-    public function getConfig()
-    {
-        return $this->userConfig;
     }
 
     /**

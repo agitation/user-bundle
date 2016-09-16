@@ -9,6 +9,7 @@
 
 namespace Agit\UserBundle\Command;
 
+use Exception;
 use Agit\BaseBundle\Command\SingletonCommandTrait;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -34,10 +35,12 @@ class UserPasswdCommand extends ContainerAwareCommand
         }
 
         $entityManager = $this->getContainer()->get("doctrine.orm.entity_manager");
-        $user = $entityManager->getRepository("AgitUserBundle:User")->findOneBy(["email" => $input->getArgument("email")]);
+
+        $user = $entityManager->getRepository("AgitUserBundle:UserInterface")
+            ->findOneBy(["email" => $input->getArgument("email")]);
 
         if (! $user) {
-            throw new \Exception("User not found.");
+            throw new Exception("User not found.");
         }
 
         $dialog = $this->getHelper("dialog");

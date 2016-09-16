@@ -11,7 +11,7 @@ namespace Agit\UserBundle\Service;
 
 use Agit\BaseBundle\Tool\StringHelper;
 use Agit\IntlBundle\Tool\Translate;
-use Agit\UserBundle\Entity\User;
+use Agit\UserBundle\Entity\UserInterface;
 use Agit\UserBundle\Exception\AuthenticationFailedException;
 use Agit\UserBundle\Exception\InvalidParametersException;
 use Agit\ValidationBundle\ValidationService;
@@ -61,7 +61,7 @@ class UserService
             throw new AuthenticationFailedException(Translate::t("Authentication has failed. Please check your user name and your password."));
         }
 
-        $user = $this->entityManager->getRepository("AgitUserBundle:User")
+        $user = $this->entityManager->getRepository("AgitUserBundle:UserInterface")
             ->findOneBy(["email" => $username, "deleted" => false]);
 
         if (! $user) {
@@ -97,7 +97,7 @@ class UserService
 
         if ($this->user === false) {
             $user = $this->securityTokenStorage->getToken()->getUser();
-            $this->user = ($user instanceof User) ? $user : null;
+            $this->user = ($user instanceof UserInterface) ? $user : null;
         }
 
         return $this->user;
@@ -112,24 +112,21 @@ class UserService
 
     public function createUser($name, $email, $role = null, $active = true)
     {
-        // find out which class implements UserConfig
-        $userConfigMetadata = $this->entityManager->getClassMetadata("Agit\UserBundle\Entity\UserConfigInterface");
-        $userConfigClass = $userConfigMetadata->name;
-
         $ivSize = mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CFB);
         $iv = mcrypt_create_iv($ivSize,  MCRYPT_RAND);
         $salt = sha1(microtime(true) . $iv);
         $randPass = StringHelper::createRandomString(15) . "Aa1"; // suffix needed to ensure PW policy compliance
 
-        $user = new User();
+        // find out which class implements the User entity
+        $userMetadata = $this->entityManager->getClassMetadata("AgitUserBundle:UserInterface");
+        $userClass = $userMetadata->name;
+
+        $user = new $userClass();
         $user->setName($name);
         $user->setEmail($email);
         $user->setRole($role ? $this->entityManager->getReference("AgitUserBundle:UserRole", $role) : null);
         $user->setDeleted(! $active);
         $user->setSalt($salt);
-        $user->setConfig($userConfigClass::getDefaultConfig());
-        $user->getConfig()->setUser($user);
-
         $this->setPassword($user, $randPass);
 
         $errors = $this->entityValidator->validate($user, new Valid(["traverse" => true]));
@@ -141,7 +138,7 @@ class UserService
         return $user;
     }
 
-    public function setPassword(User $user, $password)
+    public function setPassword(UserInterface $user, $password)
     {
         $this->validationService->validate("password", $password);
 

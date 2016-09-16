@@ -9,14 +9,8 @@
 
 namespace Agit\UserBundle\Entity;
 
-interface UserConfigInterface
-{
-    /**
-     * expected to return an instance of a default UserConfig.
-     *
-     * @return AbstractUserConfig
-     */
-    public static function getDefaultConfig();
+use Symfony\Component\Security\Core\User\UserInterface as BaseUserInterface;
 
-    public function getId();
+interface UserInterface extends BaseUserInterface
+{
 }
