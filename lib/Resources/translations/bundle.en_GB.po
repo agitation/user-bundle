@@ -3,17 +3,13 @@ msgstr ""
 "Language: en_GB\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: @AgitUserBundle/Plugin/UserRoleSeedPlugin.php:30
-#: @AgitUserBundle/Plugin/UserRoleSeedPlugin.php:30
-msgctxt "Administrator"
-msgid "user role"
-msgstr ""
-
-#: @AgitUserBundle/Service/UserService.php:63
-#: @AgitUserBundle/Service/UserService.php:69
-#: @AgitUserBundle/Service/UserService.php:74
-#: @AgitUserBundle/Service/UserService.php:63
-#: @AgitUserBundle/Service/UserService.php:69
+#: @AgitUserBundle/Service/UserService.php:61
+#: @AgitUserBundle/Service/UserService.php:68
 #: @AgitUserBundle/Service/UserService.php:74
 msgid "Authentication has failed. Please check your user name and your password."
+msgstr ""
+
+#: @AgitUserBundle/EventListener/UserRoleSeed.php:21
+msgctxt "user role"
+msgid "Administrator"
 msgstr ""
