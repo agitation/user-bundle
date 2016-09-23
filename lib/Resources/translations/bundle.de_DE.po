@@ -12,4 +12,4 @@ msgstr "Die Authentifizierung ist fehlgeschlagen. Bitte prüfen Sie Benutzername
 #: @AgitUserBundle/EventListener/UserRoleSeed.php:21
 msgctxt "user role"
 msgid "Administrator"
-msgstr ""
+msgstr "Administrator"
