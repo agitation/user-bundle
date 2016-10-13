@@ -9,8 +9,8 @@
 
 namespace Agit\UserBundle\Entity;
 
-use Agit\BaseBundle\Entity\DeletableTrait;
 use Agit\BaseBundle\Entity\DeletableInterface;
+use Agit\BaseBundle\Entity\DeletableTrait;
 use Agit\BaseBundle\Entity\GeneratedIdentityAwareTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;

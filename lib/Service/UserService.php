@@ -12,9 +12,9 @@ namespace Agit\UserBundle\Service;
 use Agit\BaseBundle\Tool\StringHelper;
 use Agit\IntlBundle\Tool\Translate;
 use Agit\UserBundle\Entity\UserInterface;
-use Agit\UserBundle\Exception\UserNotFoundException;
 use Agit\UserBundle\Exception\AuthenticationFailedException;
 use Agit\UserBundle\Exception\InvalidParametersException;
+use Agit\UserBundle\Exception\UserNotFoundException;
 use Agit\ValidationBundle\ValidationService;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -100,8 +100,9 @@ class UserService
             ->getRepository("AgitUserBundle:UserInterface")
             ->findOneBy([$field => $id, "deleted" => 0]);
 
-        if (!$user)
+        if (! $user) {
             throw new UserNotFoundException(Translate::t("The requested user does not exist."));
+        }
 
         return $user;
     }

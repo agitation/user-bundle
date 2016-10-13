@@ -9,8 +9,8 @@
 
 namespace Agit\UserBundle\Command;
 
-use Exception;
 use Agit\BaseBundle\Command\SingletonCommandTrait;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
