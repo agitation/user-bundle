@@ -12,6 +12,7 @@ namespace Agit\UserBundle\Service;
 use Agit\BaseBundle\Tool\StringHelper;
 use Agit\IntlBundle\Tool\Translate;
 use Agit\UserBundle\Entity\UserInterface;
+use Agit\UserBundle\Exception\UserNotFoundException;
 use Agit\UserBundle\Exception\AuthenticationFailedException;
 use Agit\UserBundle\Exception\InvalidParametersException;
 use Agit\ValidationBundle\ValidationService;
@@ -89,6 +90,20 @@ class UserService
         $this->user = null;
         $this->securityTokenStorage->setToken(null);
         $this->session->invalidate();
+    }
+
+    public function getUser($id)
+    {
+        $field = is_int($id) ? "id" : "email";
+
+        $user = $this->entityManager
+            ->getRepository("AgitUserBundle:UserInterface")
+            ->findOneBy([$field => $id, "deleted" => 0]);
+
+        if (!$user)
+            throw new UserNotFoundException(Translate::t("The requested user does not exist."));
+
+        return $user;
     }
 
     public function getCurrentUser()
