@@ -155,12 +155,15 @@ class UserService
 
     public function setPassword(UserInterface $user, $password)
     {
-        $this->validationService->validate("password", $password);
-
-        $encoder = $this->securityEncoderFactory->getEncoder($user);
-        $pwdHash = $encoder->encodePassword($password, $user->getSalt());
-
-        $user->setPassword($pwdHash);
+        $user->setPassword($this->encodePassword($user, $password));
         $user->eraseCredentials();
+    }
+
+    public function encodePassword(UserInterface $user, $password)
+    {
+        $this->validationService->validate("password", $password);
+        $encoder = $this->securityEncoderFactory->getEncoder($user);
+
+        return $encoder->encodePassword($password, $user->getSalt());
     }
 }
