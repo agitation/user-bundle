@@ -12,7 +12,6 @@ namespace Agit\UserBundle\Entity;
 use Agit\BaseBundle\Entity\DeletableInterface;
 use Agit\BaseBundle\Entity\DeletableTrait;
 use Agit\BaseBundle\Entity\GeneratedIdentityAwareTrait;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -48,24 +47,6 @@ abstract class AbstractUser implements UserInterface, DeletableInterface
      */
     private $password;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="UserRole")
-     * @Assert\Valid
-     */
-    private $role;
-
-    /**
-     * Extra capabilities, i.e. which are not part of the user’s Role.
-     *
-     * @ORM\ManyToMany(targetEntity="UserCapability")
-     */
-    private $capabilities = [];
-
-    public function __construct()
-    {
-        $this->capabilities = new ArrayCollection();
-    }
-
     public function equals(UserInterface $user)
     {
         return $user->getId() === $this->getId();
@@ -98,29 +79,6 @@ abstract class AbstractUser implements UserInterface, DeletableInterface
 
     public function eraseCredentials()
     {
-    }
-
-    public function hasRole($role)
-    {
-        return $this->role && $role === $this->role->getId();
-    }
-
-    public function hasCapability($cap)
-    {
-        $has = false;
-
-        if ($this->role && ($this->role->isSuper() || $this->role->hasCapability($cap))) {
-            $has = true;
-        } else {
-            foreach ($this->getCapabilities()->getValues() as $capability) {
-                if ($capability->getId() === $cap) {
-                    $has = true;
-                    break;
-                }
-            }
-        }
-
-        return $has;
     }
 
     /**
@@ -181,53 +139,5 @@ abstract class AbstractUser implements UserInterface, DeletableInterface
     public function setSalt($salt)
     {
         $this->salt = $salt;
-    }
-
-    /**
-     * Set Role.
-     *
-     * @param UserRole $role
-     *
-     * @return User
-     */
-    public function setRole(UserRole $role = null)
-    {
-        $this->role = $role;
-
-        return $this;
-    }
-
-    /**
-     * Get Role.
-     *
-     * @return UserRole
-     */
-    public function getRole()
-    {
-        return $this->role;
-    }
-
-    /**
-     * Add Capability.
-     *
-     * @param UserCapability $capability
-     *
-     * @return User
-     */
-    public function addCapability(UserCapability $capability)
-    {
-        $this->capabilities[] = $capability;
-
-        return $this;
-    }
-
-    /**
-     * Get Capabilities.
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getCapabilities()
-    {
-        return $this->capabilities;
     }
 }
