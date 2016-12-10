@@ -9,8 +9,11 @@
 
 namespace Agit\UserBundle\Service;
 
+use Agit\BaseBundle\Entity\DeletableInterface;
 use Agit\BaseBundle\Tool\StringHelper;
 use Agit\IntlBundle\Tool\Translate;
+use Agit\UserBundle\Entity\PrimaryUserInterface;
+use Agit\UserBundle\Entity\RoleAwareUserInterface;
 use Agit\UserBundle\Entity\UserInterface;
 use Agit\UserBundle\Exception\AuthenticationFailedException;
 use Agit\UserBundle\Exception\InvalidParametersException;
@@ -56,19 +59,13 @@ class UserService
         $this->validationService = $validationService;
     }
 
-    public function authenticate($username, $password)
+    public function authenticate($username, $password, $entityClass = "AgitUserBundle:PrimaryUserInterface")
     {
         if (! $this->validationService->isValid("email", $username)) {
             throw new AuthenticationFailedException(Translate::t("Authentication has failed. Please check your user name and your password."));
         }
 
-        $user = $this->entityManager->getRepository("AgitUserBundle:UserInterface")
-            ->findOneBy(["email" => $username, "deleted" => false]);
-
-        if (! $user) {
-            throw new AuthenticationFailedException(Translate::t("Authentication has failed. Please check your user name and your password."));
-        }
-
+        $user = $this->getUser($username, $entityClass);
         $encoder = $this->securityEncoderFactory->getEncoder($user);
 
         if (! $encoder->isPasswordValid($user->getPassword(), $password, $user->getSalt())) {
@@ -92,15 +89,14 @@ class UserService
         $this->session->invalidate();
     }
 
-    public function getUser($id)
+    public function getUser($id, $entityClass = "AgitUserBundle:PrimaryUserInterface")
     {
         $field = is_int($id) ? "id" : "email";
 
-        $user = $this->entityManager
-            ->getRepository("AgitUserBundle:UserInterface")
-            ->findOneBy([$field => $id, "deleted" => 0]);
+        $user = $this->entityManager->getRepository($entityClass)
+            ->findOneBy([$field => $id]);
 
-        if (! $user) {
+        if (! $user || ($user instanceof DeletableInterface && $user->isDeleted())) {
             throw new UserNotFoundException(Translate::t("The requested user does not exist."));
         }
 
@@ -113,7 +109,7 @@ class UserService
 
         if ($this->user === false) {
             $user = $this->securityTokenStorage->getToken()->getUser();
-            $this->user = ($user instanceof UserInterface) ? $user : null;
+            $this->user = ($user instanceof PrimaryUserInterface) ? $user : null;
         }
 
         return $this->user;
@@ -123,7 +119,7 @@ class UserService
     {
         $user = $this->getCurrentUser();
 
-        return $user && $user->hasCapability($cap);
+        return $user && $user instanceof RoleAwareUserInterface && $user->hasCapability($cap);
     }
 
     public function createUser($name, $email, $role = null, $active = true)
@@ -134,7 +130,7 @@ class UserService
         $randPass = StringHelper::createRandomString(15) . "Aa1"; // suffix needed to ensure PW policy compliance
 
         // find out which class implements the User entity
-        $userMetadata = $this->entityManager->getClassMetadata("AgitUserBundle:UserInterface");
+        $userMetadata = $this->entityManager->getClassMetadata("AgitUserBundle:PrimaryUserInterface");
         $userClass = $userMetadata->name;
 
         $user = new $userClass();

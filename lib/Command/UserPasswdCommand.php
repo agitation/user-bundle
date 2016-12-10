@@ -36,7 +36,7 @@ class UserPasswdCommand extends ContainerAwareCommand
 
         $entityManager = $this->getContainer()->get("doctrine.orm.entity_manager");
 
-        $user = $entityManager->getRepository("AgitUserBundle:UserInterface")
+        $user = $entityManager->getRepository("AgitUserBundle:PrimaryUserInterface")
             ->findOneBy(["email" => $input->getArgument("email")]);
 
         if (! $user) {

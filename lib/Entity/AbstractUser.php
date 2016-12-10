@@ -49,7 +49,7 @@ abstract class AbstractUser implements UserInterface, DeletableInterface
 
     public function equals(UserInterface $user)
     {
-        return $user->getId() === $this->getId();
+        return $user->getId() === $this->getId() && get_class($user) === get_class($this);
     }
 
     public function getUsername()

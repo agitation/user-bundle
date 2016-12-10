@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\MappedSuperclass
  */
-abstract class AbstractCapabilityAwareUser extends AbstractUser
+abstract class AbstractRoleAwareUser extends AbstractUser implements RoleAwareUserInterface
 {
     /**
      * @ORM\ManyToOne(targetEntity="UserRole")
