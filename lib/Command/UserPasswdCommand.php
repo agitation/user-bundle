@@ -9,8 +9,7 @@
 
 namespace Agit\UserBundle\Command;
 
-use Agit\BaseBundle\Command\SingletonCommandTrait;
-use Exception;
+use Agit\UserBundle\Service\UserService;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,38 +17,35 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class UserPasswdCommand extends ContainerAwareCommand
 {
-    use SingletonCommandTrait;
-
     protected function configure()
     {
         $this
             ->setName("agit:user:passwd")
-            ->setDescription("Add a user to the users database")
-            ->addArgument("email", InputArgument::REQUIRED, "e-mail address.");
+            ->setDescription("Updates a user’s password")
+            ->addArgument("user", InputArgument::REQUIRED, "user e-mail or ID.")
+            ->addArgument("class", InputArgument::OPTIONAL, sprintf("user entity class, default: %s", UserService::DEFAULT_USER_ENTITY_CLASS));
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (! $this->flock(__FILE__)) {
-            return;
-        }
-
         $entityManager = $this->getContainer()->get("doctrine.orm.entity_manager");
+        $userService = $this->getContainer()->get("agit.user");
+        $entityClass = $input->getArgument("class") ?: UserService::DEFAULT_USER_ENTITY_CLASS;
 
-        $user = $entityManager->getRepository("AgitUserBundle:PrimaryUserInterface")
-            ->findOneBy(["email" => $input->getArgument("email")]);
+        $userId = $input->getArgument("user");
 
-        if (! $user) {
-            throw new Exception("User not found.");
+        if (is_numeric($userId)) {
+            $userId = (int) $userId;
         }
 
+        $user = $userService->getUser($userId, $entityClass);
         $dialog = $this->getHelper("dialog");
         $password1 = $dialog->askHiddenResponse($output, sprintf("New password for %s: ", $user->getName()));
         $password2 = $dialog->askHiddenResponse($output, "Confirm new password: ");
 
         $this->getContainer()->get("agit.validation")->validate("password", $password1, $password2);
 
-        $this->getContainer()->get("agit.user")->setPassword($user, $password1);
+        $userService->setPassword($user, $password1);
 
         $entityManager->persist($user);
         $entityManager->flush();

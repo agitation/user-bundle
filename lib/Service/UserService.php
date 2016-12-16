@@ -29,6 +29,10 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UserService
 {
+    const DEFAULT_USER_ENTITY_CLASS = "AgitUserBundle:PrimaryUserInterface";
+
+    const SPECIAL_USER_ENTITY_FIELDS = ["id", "salt", "password"];
+
     private $session;
 
     private $securityTokenStorage;
@@ -59,7 +63,7 @@ class UserService
         $this->validationService = $validationService;
     }
 
-    public function authenticate($username, $password, $entityClass = "AgitUserBundle:PrimaryUserInterface")
+    public function authenticate($username, $password, $entityClass = self::DEFAULT_USER_ENTITY_CLASS)
     {
         if (! $this->validationService->isValid("email", $username)) {
             throw new AuthenticationFailedException(Translate::t("Authentication has failed. Please check your user name and your password."));
@@ -75,9 +79,9 @@ class UserService
         $this->user = $user;
     }
 
-    public function login($username, $password)
+    public function login($username, $password, $entityClass = self::DEFAULT_USER_ENTITY_CLASS)
     {
-        $this->authenticate($username, $password);
+        $this->authenticate($username, $password, $entityClass);
         $token = new UsernamePasswordToken($this->user, null, "agitation", $this->user->getRoles());
         $this->securityTokenStorage->setToken($token);
     }
@@ -89,14 +93,14 @@ class UserService
         $this->session->invalidate();
     }
 
-    public function getUser($id, $entityClass = "AgitUserBundle:PrimaryUserInterface")
+    public function getUser($id, $entityClass = self::DEFAULT_USER_ENTITY_CLASS)
     {
         $field = is_int($id) ? "id" : "email";
 
         $user = $this->entityManager->getRepository($entityClass)
             ->findOneBy([$field => $id]);
 
-        if (! $user || ($user instanceof DeletableInterface && $user->isDeleted())) {
+        if (! $user || ! ($user instanceof UserInterface) || ($user instanceof DeletableInterface && $user->isDeleted())) {
             throw new UserNotFoundException(Translate::t("The requested user does not exist."));
         }
 
@@ -122,24 +126,26 @@ class UserService
         return $user && $user instanceof RoleAwareUserInterface && $user->hasCapability($cap);
     }
 
-    public function createUser($name, $email, $role = null, $active = true)
+    public function createUser(array $fields, $entityClass = self::DEFAULT_USER_ENTITY_CLASS)
     {
         $ivSize = mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CFB);
         $iv = mcrypt_create_iv($ivSize,  MCRYPT_RAND);
         $salt = sha1(microtime(true) . $iv);
         $randPass = StringHelper::createRandomString(15) . "Aa1"; // suffix needed to ensure PW policy compliance
 
-        // find out which class implements the User entity
-        $userMetadata = $this->entityManager->getClassMetadata("AgitUserBundle:PrimaryUserInterface");
-        $userClass = $userMetadata->name;
-
+        $userClass = $this->entityManager->getClassMetadata($entityClass)->name;
         $user = new $userClass();
-        $user->setName($name);
-        $user->setEmail($email);
-        $user->setRole($role ? $this->entityManager->getReference("AgitUserBundle:UserRole", $role) : null);
-        $user->setDeleted(! $active);
+
+        if (! ($user instanceof UserInterface)) {
+            throw new InvalidParametersException(sprintf("Invalid user class: %s", $userClass));
+        }
+
         $user->setSalt($salt);
         $this->setPassword($user, $randPass);
+
+        foreach ($fields as $key => $value) {
+            $this->setUserField($user, $key, $value);
+        }
 
         $errors = $this->entityValidator->validate($user, new Valid(["traverse" => true]));
 
@@ -148,6 +154,24 @@ class UserService
         }
 
         return $user;
+    }
+
+    public function setUserField(UserInterface $user, $field, $value)
+    {
+        if (in_array($field, self::SPECIAL_USER_ENTITY_FIELDS)) {
+            throw new InvalidParametersException(sprintf("The `%s` field cannot be updated with this method.", $field));
+        }
+
+        $entityMeta = $this->entityManager->getClassMetadata(get_class($user));
+
+        if ($entityMeta->hasField($field)) {
+            $entityMeta->setFieldValue($user, $field, $value);
+        } elseif ($entityMeta->hasAssociation($field)) {
+            $targetEntity = $entityMeta->getAssociationTargetClass($field);
+            $entityMeta->setFieldValue($user, $field, $value ? $this->entityManager->getReference($targetEntity, $value) : null);
+        } else {
+            throw new InvalidParametersException(sprintf("Invalid user field: %s", $field));
+        }
     }
 
     public function setPassword(UserInterface $user, $password)

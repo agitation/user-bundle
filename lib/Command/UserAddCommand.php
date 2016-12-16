@@ -9,7 +9,7 @@
 
 namespace Agit\UserBundle\Command;
 
-use Agit\BaseBundle\Command\SingletonCommandTrait;
+use Agit\UserBundle\Exception\InvalidParametersException;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,29 +17,29 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class UserAddCommand extends ContainerAwareCommand
 {
-    use SingletonCommandTrait;
-
     protected function configure()
     {
         $this
             ->setName("agit:user:add")
             ->setDescription("Add a user to the users database")
-            ->addArgument("email", InputArgument::REQUIRED, "e-mail address.")
-            ->addArgument("name", InputArgument::REQUIRED, "full name (use quotes if you want to use spaces).")
-            ->addArgument("role", InputArgument::OPTIONAL, "user role identifier.");
+            ->addArgument("fields", InputArgument::IS_ARRAY | InputArgument::REQUIRED, "fields, as \"key=value\"");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (! $this->flock(__FILE__)) {
-            return;
+        $fields = [];
+
+        foreach ($input->getArgument("fields") as $value) {
+            $parts = explode("=", $value, 2);
+
+            if (count($parts) !== 2) {
+                throw new InvalidParametersException(sprintf("Invalid field value: %s.", $value));
+            }
+
+            $fields[$parts[0]] = $parts[1];
         }
 
-        $user = $this->getContainer()->get("agit.user")->createUser(
-            $input->getArgument("name"),
-            $input->getArgument("email"),
-            $input->getArgument("role")
-        );
+        $user = $this->getContainer()->get("agit.user")->createUser($fields);
 
         $entityManager = $this->getContainer()->get("doctrine.orm.entity_manager");
         $entityManager->persist($user);
