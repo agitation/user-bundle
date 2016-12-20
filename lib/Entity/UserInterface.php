@@ -9,8 +9,9 @@
 
 namespace Agit\UserBundle\Entity;
 
+use Agit\BaseBundle\Entity\IdentityInterface;
 use Symfony\Component\Security\Core\User\UserInterface as BaseUserInterface;
 
-interface UserInterface extends BaseUserInterface
+interface UserInterface extends BaseUserInterface, IdentityInterface
 {
 }
