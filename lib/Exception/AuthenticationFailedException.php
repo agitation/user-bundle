@@ -9,13 +9,13 @@
 
 namespace Agit\UserBundle\Exception;
 
-use Agit\BaseBundle\Exception\AgitException;
+use Agit\BaseBundle\Exception\PublicException;
 
 /**
  * The authentication information is invalid. This counts as a “bad request”,
  * hence the 400 status code.
  */
-class AuthenticationFailedException extends AgitException
+class AuthenticationFailedException extends PublicException
 {
     protected $statusCode = 400;
 }

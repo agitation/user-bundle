@@ -9,12 +9,12 @@
 
 namespace Agit\UserBundle\Exception;
 
-use Agit\BaseBundle\Exception\AgitException;
+use Agit\BaseBundle\Exception\PublicException;
 
 /**
  * The parameters passed for creating or modifying a user are invalid.
  */
-class InvalidParametersException extends AgitException
+class InvalidParametersException extends PublicException
 {
     protected $statusCode = 400;
 }

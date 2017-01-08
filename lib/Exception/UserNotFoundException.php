@@ -9,12 +9,12 @@
 
 namespace Agit\UserBundle\Exception;
 
-use Agit\BaseBundle\Exception\AgitException;
+use Agit\BaseBundle\Exception\PublicException;
 
 /**
  * The requested user could not be found.
  */
-class UserNotFoundException extends AgitException
+class UserNotFoundException extends PublicException
 {
     protected $statusCode = 404;
 }
