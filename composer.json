@@ -4,8 +4,9 @@
     "require": {
         "php": ">=5.4.9",
         "symfony/symfony": "2.8.*",
-        "agitation/base-bundle": "dev-master",
-        "agitation/seed-bundle": "dev-master"
+        "agitation/base-bundle": "~1.0",
+        "agitation/intl-bundle": "~1.0",
+        "agitation/seed-bundle": "~1.0"
     },
     "autoload": {
         "psr-4": {
