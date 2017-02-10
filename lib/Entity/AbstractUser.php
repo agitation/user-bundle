@@ -32,6 +32,11 @@ abstract class AbstractUser implements UserInterface, DeletableInterface
     /**
      * @ORM\Column(type="string", length=70, nullable=true, unique=true)
      * @Assert\Email()
+     *
+     * NOTE: This field must remain UNIQUE and NULLABLE, because it also serves
+     * as user login. For use cases where different user entities may have the
+     * same e-mail address, this field should be left empty and another e-mail
+     * field should be introduced.
      */
     private $email;
 
@@ -42,7 +47,7 @@ abstract class AbstractUser implements UserInterface, DeletableInterface
     private $salt;
 
     /**
-     * @ORM\Column(name="password",type="string",length=88)
+     * @ORM\Column(name="password",type="string",length=90)
      * @Assert\Length(min=30)
      */
     private $password;
