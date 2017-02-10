@@ -143,34 +143,44 @@ class UserService
         $user->setSalt($salt);
         $this->setPassword($user, $randPass);
 
-        foreach ($fields as $key => $value) {
-            $this->setUserField($user, $key, $value);
-        }
+        $this->setUserFields($user, $fields);
+        $this->validateUser($user);
 
+        return $user;
+    }
+
+    public function updateUser(UserInterface $user, array $fields)
+    {
+        $this->setUserFields($user, $fields);
+        $this->validateUser($user);
+    }
+
+    public function validateUser(UserInterface $user)
+    {
         $errors = $this->entityValidator->validate($user, new Valid(["traverse" => true]));
 
         if (count($errors) > 0) {
             throw new InvalidParametersException((string) $errors);
         }
-
-        return $user;
     }
 
-    public function setUserField(UserInterface $user, $field, $value)
+    public function setUserFields(UserInterface $user, array $fields)
     {
-        if (in_array($field, self::SPECIAL_USER_ENTITY_FIELDS)) {
-            throw new InvalidParametersException(sprintf("The `%s` field cannot be updated with this method.", $field));
-        }
+        foreach ($fields as $field => $value) {
+            if (in_array($field, self::SPECIAL_USER_ENTITY_FIELDS)) {
+                throw new InvalidParametersException(sprintf("The `%s` field cannot be updated with this method.", $field));
+            }
 
-        $entityMeta = $this->entityManager->getClassMetadata(get_class($user));
+            $entityMeta = $this->entityManager->getClassMetadata(get_class($user));
 
-        if ($entityMeta->hasField($field)) {
-            $entityMeta->setFieldValue($user, $field, $value);
-        } elseif ($entityMeta->hasAssociation($field)) {
-            $targetEntity = $entityMeta->getAssociationTargetClass($field);
-            $entityMeta->setFieldValue($user, $field, $value ? $this->entityManager->getReference($targetEntity, $value) : null);
-        } else {
-            throw new InvalidParametersException(sprintf("Invalid user field: %s", $field));
+            if ($entityMeta->hasField($field)) {
+                $entityMeta->setFieldValue($user, $field, $value);
+            } elseif ($entityMeta->hasAssociation($field)) {
+                $targetEntity = $entityMeta->getAssociationTargetClass($field);
+                $entityMeta->setFieldValue($user, $field, $value ? $this->entityManager->getReference($targetEntity, $value) : null);
+            } else {
+                throw new InvalidParametersException(sprintf("Invalid user field: %s", $field));
+            }
         }
     }
 
