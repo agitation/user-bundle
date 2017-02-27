@@ -20,6 +20,7 @@ use Agit\UserBundle\Exception\InvalidParametersException;
 use Agit\UserBundle\Exception\UserNotFoundException;
 use Agit\ValidationBundle\ValidationService;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -166,6 +167,27 @@ class UserService
 
     public function setUserFields(UserInterface $user, array $fields)
     {
+        // if capabilities are being set, we will (if necessary) remove the ones
+        // already present in the role.
+
+        if (isset($fields["capabilities"]) && isset($fields["capabilities"])) {
+            if (isset($fields["role"])) {
+                $role = $this->entityManager->find("AgitUserBundle:UserRole", $fields["role"]);
+            } elseif ($user instanceof RoleAwareUserInterface) {
+                $role = $user->getRole();
+            }
+
+            if (! $role) {
+                throw new InvalidParametersException("Invalid role.");
+            }
+
+            $roleCaps = array_map(function ($roleCap) { return $roleCap->getId(); }, $role->getCapabilities()->getValues());
+
+            $fields["capabilities"] = array_filter($fields["capabilities"], function ($cap) use ($roleCaps) {
+                return ! in_array($cap, $roleCaps);
+            });
+        }
+
         foreach ($fields as $field => $value) {
             if (in_array($field, self::SPECIAL_USER_ENTITY_FIELDS)) {
                 throw new InvalidParametersException(sprintf("The `%s` field cannot be updated with this method.", $field));
@@ -176,8 +198,19 @@ class UserService
             if ($entityMeta->hasField($field)) {
                 $entityMeta->setFieldValue($user, $field, $value);
             } elseif ($entityMeta->hasAssociation($field)) {
-                $targetEntity = $entityMeta->getAssociationTargetClass($field);
-                $entityMeta->setFieldValue($user, $field, $value ? $this->entityManager->getReference($targetEntity, $value) : null);
+                $mapping = $entityMeta->getAssociationMapping($field);
+                $targetEntity = $mapping["targetEntity"];
+
+                if ($mapping["type"] & ClassMetadataInfo::TO_ONE && is_scalar($value)) {
+                    $entityMeta->setFieldValue($user, $field, $value ? $this->entityManager->getReference($targetEntity, $value) : null);
+                } elseif ($mapping["type"] & ClassMetadataInfo::TO_MANY && is_array($value)) {
+                    $child = $entityMeta->getFieldValue($user, $field);
+                    $child->clear();
+
+                    foreach ($value as $val) {
+                        $child->add($this->entityManager->getReference($targetEntity, $val));
+                    }
+                }
             } else {
                 throw new InvalidParametersException(sprintf("Invalid user field: %s", $field));
             }
