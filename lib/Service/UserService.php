@@ -113,7 +113,8 @@ class UserService
         $user = null;
 
         if ($this->user === false) {
-            $user = $this->securityTokenStorage->getToken()->getUser();
+            $token = $this->securityTokenStorage->getToken();
+            $user = $token ? $token->getUser() : null;
             $this->user = ($user instanceof PrimaryUserInterface) ? $user : null;
         }
 
