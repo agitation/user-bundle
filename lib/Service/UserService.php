@@ -108,6 +108,19 @@ class UserService
         return $user;
     }
 
+    public function userExists($id, $entityClass = self::DEFAULT_USER_ENTITY_CLASS)
+    {
+        $exists = false;
+
+        try {
+            $this->getUser($id, $entityClass);
+            $exists = true;
+        } catch (UserNotFoundException $e) {
+        }
+
+        return $exists;
+    }
+
     public function getCurrentUser()
     {
         $user = null;
