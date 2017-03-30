@@ -10,6 +10,7 @@
 namespace Agit\UserBundle\Service;
 
 use Agit\BaseBundle\Entity\DeletableInterface;
+use Agit\BaseBundle\Service\EntityService;
 use Agit\BaseBundle\Tool\StringHelper;
 use Agit\IntlBundle\Tool\Translate;
 use Agit\UserBundle\Entity\PrimaryUserInterface;
@@ -20,7 +21,6 @@ use Agit\UserBundle\Exception\InvalidParametersException;
 use Agit\UserBundle\Exception\UserNotFoundException;
 use Agit\ValidationBundle\ValidationService;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -42,6 +42,8 @@ class UserService
 
     private $entityManager;
 
+    private $entityService;
+
     private $entityValidator;
 
     private $validationService;
@@ -53,6 +55,7 @@ class UserService
         TokenStorage $securityTokenStorage,
         EncoderFactory $securityEncoderFactory,
         EntityManager $entityManager,
+        EntityService $entityService,
         ValidatorInterface $entityValidator,
         ValidationService $validationService
     ) {
@@ -60,6 +63,7 @@ class UserService
         $this->securityTokenStorage = $securityTokenStorage;
         $this->securityEncoderFactory = $securityEncoderFactory;
         $this->entityManager = $entityManager;
+        $this->entityService = $entityService;
         $this->entityValidator = $entityValidator;
         $this->validationService = $validationService;
     }
@@ -202,33 +206,7 @@ class UserService
             });
         }
 
-        foreach ($fields as $field => $value) {
-            if (in_array($field, self::SPECIAL_USER_ENTITY_FIELDS)) {
-                throw new InvalidParametersException(sprintf("The `%s` field cannot be updated with this method.", $field));
-            }
-
-            $entityMeta = $this->entityManager->getClassMetadata(get_class($user));
-
-            if ($entityMeta->hasField($field)) {
-                $entityMeta->setFieldValue($user, $field, $value);
-            } elseif ($entityMeta->hasAssociation($field)) {
-                $mapping = $entityMeta->getAssociationMapping($field);
-                $targetEntity = $mapping["targetEntity"];
-
-                if ($mapping["type"] & ClassMetadataInfo::TO_ONE && is_scalar($value)) {
-                    $entityMeta->setFieldValue($user, $field, $value ? $this->entityManager->getReference($targetEntity, $value) : null);
-                } elseif ($mapping["type"] & ClassMetadataInfo::TO_MANY && is_array($value)) {
-                    $child = $entityMeta->getFieldValue($user, $field);
-                    $child->clear();
-
-                    foreach ($value as $val) {
-                        $child->add($this->entityManager->getReference($targetEntity, $val));
-                    }
-                }
-            } else {
-                throw new InvalidParametersException(sprintf("Invalid user field: %s", $field));
-            }
-        }
+        $this->entityService->updateEntity($user, $fields, self::SPECIAL_USER_ENTITY_FIELDS);
     }
 
     public function setPassword(UserInterface $user, $password)

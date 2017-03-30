@@ -2,7 +2,7 @@ services:
 
     agit.user:
         class: Agit\UserBundle\Service\UserService
-        arguments: [ "@session", "@security.token_storage", "@security.encoder_factory", "@doctrine.orm.entity_manager", "@validator", "@agit.validation" ]
+        arguments: [ "@session", "@security.token_storage", "@security.encoder_factory", "@doctrine.orm.entity_manager", "@agit.entity", "@validator", "@agit.validation" ]
 
     agit.seed.userrole:
         private: true
