@@ -34,18 +34,39 @@ class UserService
 
     const SPECIAL_USER_ENTITY_FIELDS = ["id", "salt", "password"];
 
+    /**
+     * @var SessionInterface
+     */
     private $session;
 
+    /**
+     * @var TokenStorage
+     */
     private $securityTokenStorage;
 
+    /**
+     * @var EncoderFactory
+     */
     private $securityEncoderFactory;
 
+    /**
+     * @var EntityManager
+     */
     private $entityManager;
 
+    /**
+     * @var EntityService
+     */
     private $entityService;
 
+    /**
+     * @var ValidatorInterface
+     */
     private $entityValidator;
 
+    /**
+     * @var ValidationService
+     */
     private $validationService;
 
     private $user = false;
