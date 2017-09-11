@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/user-bundle
  * @link       http://github.com/agitation/user-bundle
@@ -55,12 +55,18 @@ class UserRole
     {
         $has = false;
 
-        if ($this->isSuper()) {
+        if ($this->isSuper())
+        {
             $has = true;
-        } else {
-            foreach ($this->getCapabilities()->getValues() as $capability) {
-                if ($capability->getId() === $cap) {
+        }
+        else
+        {
+            foreach ($this->getCapabilities()->getValues() as $capability)
+            {
+                if ($capability->getId() === $cap)
+                {
                     $has = true;
+
                     break;
                 }
             }
@@ -76,7 +82,7 @@ class UserRole
      */
     public function getName()
     {
-        return Translate::x("user role", $this->name);
+        return Translate::x('user role', $this->name);
     }
 
     /**

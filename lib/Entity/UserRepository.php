@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/user-bundle
  * @link       http://github.com/agitation/user-bundle
@@ -19,16 +19,17 @@ class UserRepository extends EntityRepository implements UserProviderInterface
 {
     public function loadUserByUsername($email)
     {
-        $user = $this->createQueryBuilder("u")
-            ->where("u.email = :email")
-            ->andWhere("u.status = ?1")
+        $user = $this->createQueryBuilder('u')
+            ->where('u.email = :email')
+            ->andWhere('u.status = ?1')
             ->setParameter(1, 1)
-            ->setParameter("email", $email)
+            ->setParameter('email', $email)
             ->setMaxResults(1)
             ->getQuery()->getOneOrNullResult();
 
-        if (! $user) {
-            throw new UsernameNotFoundException("No user was found.");
+        if (! $user)
+        {
+            throw new UsernameNotFoundException('No user was found.');
         }
 
         return $user;
@@ -37,9 +38,9 @@ class UserRepository extends EntityRepository implements UserProviderInterface
     public function userExists($email)
     {
         return (bool) $this
-            ->createQueryBuilder("u")
-            ->where("u.email = :email")
-            ->setParameter("email", $email)
+            ->createQueryBuilder('u')
+            ->where('u.email = :email')
+            ->setParameter('email', $email)
             ->setMaxResults(1)
             ->getQuery()->getOneOrNullResult();
     }
@@ -48,8 +49,9 @@ class UserRepository extends EntityRepository implements UserProviderInterface
     {
         $class = get_class($user);
 
-        if (! $this->supportsClass($class)) {
-            throw new UnsupportedUserException(sprintf("Instances of `%s` are not supported.", $class));
+        if (! $this->supportsClass($class))
+        {
+            throw new UnsupportedUserException(sprintf('Instances of `%s` are not supported.', $class));
         }
 
         return $this->find($user->getId());

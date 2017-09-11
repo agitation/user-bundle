@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/user-bundle
  * @link       http://github.com/agitation/user-bundle
@@ -79,7 +79,7 @@ abstract class AbstractUser implements UserInterface, DeletableInterface
 
     public function getRoles() // the one required by Symfony, useless for us
     {
-        return ["user"];
+        return ['user'];
     }
 
     public function eraseCredentials()

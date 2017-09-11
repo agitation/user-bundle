@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/user-bundle
  * @link       http://github.com/agitation/user-bundle
@@ -16,10 +16,10 @@ class UserRoleSeed
 {
     public function registerSeed(SeedEvent $event)
     {
-        $event->addSeedEntry("AgitUserBundle:UserRole", [
-            "id"      => "administrator",
-            "name"    => Translate::noopX("user role", "Administrator"),
-            "isSuper" => true
+        $event->addSeedEntry('AgitUserBundle:UserRole', [
+            'id' => 'administrator',
+            'name' => Translate::noopX('user role', 'Administrator'),
+            'isSuper' => true
         ]);
     }
 }

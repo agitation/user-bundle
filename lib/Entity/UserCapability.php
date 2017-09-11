@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/user-bundle
  * @link       http://github.com/agitation/user-bundle
@@ -39,6 +39,6 @@ class UserCapability
      */
     public function getName()
     {
-        return Translate::x("user capability", $this->name);
+        return Translate::x('user capability', $this->name);
     }
 }

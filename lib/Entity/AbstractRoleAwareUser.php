@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/user-bundle
  * @link       http://github.com/agitation/user-bundle
@@ -46,12 +46,18 @@ abstract class AbstractRoleAwareUser extends AbstractUser implements RoleAwareUs
     {
         $has = false;
 
-        if ($this->role && ($this->role->isSuper() || $this->role->hasCapability($cap))) {
+        if ($this->role && ($this->role->isSuper() || $this->role->hasCapability($cap)))
+        {
             $has = true;
-        } else {
-            foreach ($this->getCapabilities()->getValues() as $capability) {
-                if ($capability->getId() === $cap) {
+        }
+        else
+        {
+            foreach ($this->getCapabilities()->getValues() as $capability)
+            {
+                if ($capability->getId() === $cap)
+                {
                     $has = true;
+
                     break;
                 }
             }

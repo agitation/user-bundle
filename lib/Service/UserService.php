@@ -1,5 +1,5 @@
 <?php
-
+declare(strict_types=1);
 /*
  * @package    agitation/user-bundle
  * @link       http://github.com/agitation/user-bundle
@@ -30,9 +30,9 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UserService
 {
-    const DEFAULT_USER_ENTITY_CLASS = "AgitUserBundle:PrimaryUserInterface";
+    const DEFAULT_USER_ENTITY_CLASS = 'AgitUserBundle:PrimaryUserInterface';
 
-    const SPECIAL_USER_ENTITY_FIELDS = ["id", "salt", "password"];
+    const SPECIAL_USER_ENTITY_FIELDS = ['id', 'salt', 'password'];
 
     /**
      * @var SessionInterface
@@ -91,15 +91,17 @@ class UserService
 
     public function authenticate($username, $password, $entityClass = self::DEFAULT_USER_ENTITY_CLASS)
     {
-        if (! $this->validationService->isValid("email", $username)) {
-            throw new AuthenticationFailedException(Translate::t("Authentication has failed. Please check your user name and your password."));
+        if (! $this->validationService->isValid('email', $username))
+        {
+            throw new AuthenticationFailedException(Translate::t('Authentication has failed. Please check your user name and your password.'));
         }
 
         $user = $this->getUser($username, $entityClass);
         $encoder = $this->securityEncoderFactory->getEncoder($user);
 
-        if (! $encoder->isPasswordValid($user->getPassword(), $password, $user->getSalt())) {
-            throw new AuthenticationFailedException(Translate::t("Authentication has failed. Please check your user name and your password."));
+        if (! $encoder->isPasswordValid($user->getPassword(), $password, $user->getSalt()))
+        {
+            throw new AuthenticationFailedException(Translate::t('Authentication has failed. Please check your user name and your password.'));
         }
 
         $this->user = $user;
@@ -108,7 +110,7 @@ class UserService
     public function login($username, $password, $entityClass = self::DEFAULT_USER_ENTITY_CLASS)
     {
         $this->authenticate($username, $password, $entityClass);
-        $token = new UsernamePasswordToken($this->user, null, "agitation", $this->user->getRoles());
+        $token = new UsernamePasswordToken($this->user, null, 'agitation', $this->user->getRoles());
         $this->securityTokenStorage->setToken($token);
     }
 
@@ -121,13 +123,14 @@ class UserService
 
     public function getUser($id, $entityClass = self::DEFAULT_USER_ENTITY_CLASS)
     {
-        $field = is_int($id) ? "id" : "email";
+        $field = is_int($id) ? 'id' : 'email';
 
         $user = $this->entityManager->getRepository($entityClass)
             ->findOneBy([$field => $id]);
 
-        if (! $user || ! ($user instanceof UserInterface) || ($user instanceof DeletableInterface && $user->isDeleted())) {
-            throw new UserNotFoundException(Translate::t("The requested user does not exist."));
+        if (! $user || ! ($user instanceof UserInterface) || ($user instanceof DeletableInterface && $user->isDeleted()))
+        {
+            throw new UserNotFoundException(Translate::t('The requested user does not exist.'));
         }
 
         return $user;
@@ -137,10 +140,13 @@ class UserService
     {
         $exists = false;
 
-        try {
+        try
+        {
             $this->getUser($id, $entityClass);
             $exists = true;
-        } catch (UserNotFoundException $e) {
+        }
+        catch (UserNotFoundException $e)
+        {
         }
 
         return $exists;
@@ -150,7 +156,8 @@ class UserService
     {
         $user = null;
 
-        if ($this->user === false) {
+        if ($this->user === false)
+        {
             $token = $this->securityTokenStorage->getToken();
             $user = $token ? $token->getUser() : null;
             $this->user = ($user instanceof PrimaryUserInterface) ? $user : null;
@@ -169,15 +176,16 @@ class UserService
     public function createUser(array $fields, $entityClass = self::DEFAULT_USER_ENTITY_CLASS)
     {
         $ivSize = mcrypt_get_iv_size(MCRYPT_CAST_256, MCRYPT_MODE_CFB);
-        $iv = mcrypt_create_iv($ivSize,  MCRYPT_RAND);
+        $iv = mcrypt_create_iv($ivSize, MCRYPT_RAND);
         $salt = sha1(microtime(true) . $iv);
-        $randPass = StringHelper::createRandomString(15) . "Aa1"; // suffix needed to ensure PW policy compliance
+        $randPass = StringHelper::createRandomString(15) . 'Aa1'; // suffix needed to ensure PW policy compliance
 
         $userClass = $this->entityManager->getClassMetadata($entityClass)->name;
         $user = new $userClass();
 
-        if (! ($user instanceof UserInterface)) {
-            throw new InvalidParametersException(sprintf("Invalid user class: %s", $userClass));
+        if (! ($user instanceof UserInterface))
+        {
+            throw new InvalidParametersException(sprintf('Invalid user class: %s', $userClass));
         }
 
         $user->setSalt($salt);
@@ -197,9 +205,10 @@ class UserService
 
     public function validateUser(UserInterface $user)
     {
-        $errors = $this->entityValidator->validate($user, new Valid(["traverse" => true]));
+        $errors = $this->entityValidator->validate($user, new Valid(['traverse' => true]));
 
-        if (count($errors) > 0) {
+        if (count($errors) > 0)
+        {
             throw new InvalidParametersException((string) $errors);
         }
     }
@@ -209,20 +218,27 @@ class UserService
         // if capabilities are being set, we will (if necessary) remove the ones
         // already present in the role.
 
-        if (isset($fields["capabilities"]) && isset($fields["capabilities"])) {
-            if (isset($fields["role"])) {
-                $role = $this->entityManager->find("AgitUserBundle:UserRole", $fields["role"]);
-            } elseif ($user instanceof RoleAwareUserInterface) {
+        if (isset($fields['capabilities']) && isset($fields['capabilities']))
+        {
+            if (isset($fields['role']))
+            {
+                $role = $this->entityManager->find('AgitUserBundle:UserRole', $fields['role']);
+            }
+            elseif ($user instanceof RoleAwareUserInterface)
+            {
                 $role = $user->getRole();
             }
 
-            if (! $role) {
-                throw new InvalidParametersException("Invalid role.");
+            if (! $role)
+            {
+                throw new InvalidParametersException('Invalid role.');
             }
 
-            $roleCaps = array_map(function ($roleCap) { return $roleCap->getId(); }, $role->getCapabilities()->getValues());
+            $roleCaps = array_map(function ($roleCap) {
+                return $roleCap->getId();
+            }, $role->getCapabilities()->getValues());
 
-            $fields["capabilities"] = array_filter($fields["capabilities"], function ($cap) use ($roleCaps) {
+            $fields['capabilities'] = array_filter($fields['capabilities'], function ($cap) use ($roleCaps) {
                 return ! in_array($cap, $roleCaps);
             });
         }
@@ -238,7 +254,7 @@ class UserService
 
     public function encodePassword(UserInterface $user, $password)
     {
-        $this->validationService->validate("password", $password);
+        $this->validationService->validate('password', $password);
         $encoder = $this->securityEncoderFactory->getEncoder($user);
 
         return $encoder->encodePassword($password, $user->getSalt());
