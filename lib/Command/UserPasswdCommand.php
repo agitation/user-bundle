@@ -14,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 
 class UserPasswdCommand extends ContainerAwareCommand
 {
@@ -40,9 +41,14 @@ class UserPasswdCommand extends ContainerAwareCommand
         }
 
         $user = $userService->getUser($userId, $entityClass);
-        $dialog = $this->getHelper('dialog');
-        $password1 = $dialog->askHiddenResponse($output, sprintf('New password for %s: ', $user->getName()));
-        $password2 = $dialog->askHiddenResponse($output, 'Confirm new password: ');
+        $helper = $this->getHelper('question');
+        $question1 = new Question(sprintf('New password for %s: ', $user->getName()));
+        $question1->setHidden(true);
+        $question2 = new Question('Confirm new password: ');
+        $question2->setHidden(true);
+
+        $password1 = $helper->ask($input, $output, $question1);
+        $password2 = $helper->ask($input, $output, $question2);
 
         $this->getContainer()->get('agit.validation')->validate('password', $password1, $password2);
 
