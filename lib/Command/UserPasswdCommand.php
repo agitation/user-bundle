@@ -41,18 +41,32 @@ class UserPasswdCommand extends ContainerAwareCommand
         }
 
         $user = $userService->getUser($userId, $entityClass);
-        $helper = $this->getHelper('question');
-        $question1 = new Question(sprintf('New password for %s: ', $user->getName()));
-        $question1->setHidden(true);
-        $question2 = new Question('Confirm new password: ');
-        $question2->setHidden(true);
 
-        $password1 = $helper->ask($input, $output, $question1);
-        $password2 = $helper->ask($input, $output, $question2);
+        if (0 === ftell(STDIN))
+        {
+            $password = "";
 
-        $this->getContainer()->get('agit.validation')->validate('password', $password1, $password2);
+            while (!feof(STDIN))
+            {
+                $password .= fread(STDIN, 1024);
+            }
 
-        $userService->setPassword($user, $password1);
+            $password = rtrim($password, "\n");
+        }
+        else
+        {
+            $helper = $this->getHelper('question');
+            $question1 = new Question(sprintf('New password for %s: ', $user->getName()));
+            $question1->setHidden(true);
+            $question2 = new Question('Confirm new password: ');
+            $question2->setHidden(true);
+            $password = $helper->ask($input, $output, $question1);
+            $password2 = $helper->ask($input, $output, $question2);
+
+            $this->getContainer()->get('agit.validation')->validate('password', $password, $password2);
+        }
+
+        $userService->setPassword($user, $password);
 
         $entityManager->persist($user);
         $entityManager->flush();
