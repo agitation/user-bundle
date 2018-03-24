@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 /*
  * @package    agitation/user-bundle
  * @link       http://github.com/agitation/user-bundle
@@ -44,7 +45,7 @@ class UserPasswdCommand extends ContainerAwareCommand
 
         if (0 === ftell(STDIN))
         {
-            $password = "";
+            $password = '';
 
             while (!feof(STDIN))
             {
