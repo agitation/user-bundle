@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace Agit\UserBundle\Command;
 
-use Agit\UserBundle\Service\UserService;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -24,15 +23,13 @@ class UserPasswdCommand extends ContainerAwareCommand
         $this
             ->setName('agit:user:passwd')
             ->setDescription('Updates a user’s password')
-            ->addArgument('user', InputArgument::REQUIRED, 'user e-mail or ID.')
-            ->addArgument('class', InputArgument::OPTIONAL, sprintf('user entity class, default: %s', UserService::DEFAULT_USER_ENTITY_CLASS));
+            ->addArgument('user', InputArgument::REQUIRED, 'user e-mail or ID.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
         $userService = $this->getContainer()->get('agit.user');
-        $entityClass = $input->getArgument('class') ?: UserService::DEFAULT_USER_ENTITY_CLASS;
 
         $userId = $input->getArgument('user');
 
@@ -41,7 +38,7 @@ class UserPasswdCommand extends ContainerAwareCommand
             $userId = (int) $userId;
         }
 
-        $user = $userService->getUser($userId, $entityClass);
+        $user = $userService->getUser($userId);
 
         if (0 === ftell(STDIN))
         {

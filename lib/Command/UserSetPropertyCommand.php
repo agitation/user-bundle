@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace Agit\UserBundle\Command;
 
-use Agit\UserBundle\Service\UserService;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -25,8 +24,7 @@ class UserSetPropertyCommand extends ContainerAwareCommand
             ->setDescription('Updates a property of a primary user entity. NOTE: The user entity is not being validated, because we want to allow modifying incomplete user entities.')
             ->addArgument('user', InputArgument::REQUIRED, 'user e-mail or ID')
             ->addArgument('name', InputArgument::REQUIRED, 'field name')
-            ->addArgument('value', InputArgument::REQUIRED, 'value or reference')
-            ->addArgument('class', InputArgument::OPTIONAL, sprintf('user entity class, default: %s', UserService::DEFAULT_USER_ENTITY_CLASS));
+            ->addArgument('value', InputArgument::REQUIRED, 'value or reference');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -34,7 +32,6 @@ class UserSetPropertyCommand extends ContainerAwareCommand
         $userId = $input->getArgument('user');
         $field = $input->getArgument('name');
         $value = $input->getArgument('value');
-        $entityClass = $input->getArgument('class') ?: UserService::DEFAULT_USER_ENTITY_CLASS;
 
         if (is_numeric($userId))
         {
@@ -44,7 +41,7 @@ class UserSetPropertyCommand extends ContainerAwareCommand
         $userService = $this->getContainer()->get('agit.user');
         $entityManager = $this->getContainer()->get('doctrine.orm.entity_manager');
 
-        $user = $userService->getUser($userId, $entityClass);
+        $user = $userService->getUser($userId);
         $userService->setUserField($user, $field, $value);
 
         $entityManager->persist($user);

@@ -16,4 +16,15 @@ use Symfony\Component\Security\Core\User\UserInterface as BaseUserInterface;
 
 interface UserInterface extends BaseUserInterface, NameInterface, IdentityInterface
 {
+    public function hasRole($role);
+
+    public function setRole(UserRole $role = null);
+
+    public function getRole();
+
+    public function hasCapability($cap);
+
+    public function addCapability(UserCapability $capability);
+
+    public function getCapabilities();
 }
