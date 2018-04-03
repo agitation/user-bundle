@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace Agit\UserBundle\Service;
 
 use Agit\BaseBundle\Service\EntityService;
-use Agit\IntlBundle\Tool\Translate;
 use Agit\UserBundle\Entity\UserInterface;
 use Agit\UserBundle\Entity\UserRole;
 use Doctrine\ORM\EntityManager;
@@ -82,7 +81,7 @@ class UserService
 
         if (! $encoder->isPasswordValid($user->getPassword(), $password, $user->getSalt()))
         {
-            throw new UnauthorizedHttpException(Translate::t('Authentication has failed. Please check your user name and your password.'));
+            throw new UnauthorizedHttpException('Authentication has failed.');
         }
 
         $this->user = $user;

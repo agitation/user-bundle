@@ -1,8 +1,0 @@
-msgid ""
-msgstr ""
-"Language: de_DE\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-
-#: @AgitUserBundle/Service/UserService.php:86
-msgid "Authentication has failed. Please check your user name and your password."
-msgstr "Die Authentifizierung ist fehlgeschlagen. Bitte prüfen Sie Benutzername und Passwort."

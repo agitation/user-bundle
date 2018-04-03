@@ -3,8 +3,6 @@
     "type": "symfony-bundle",
     "require": {
         "agitation/base-bundle": "~1.0",
-        "agitation/intl-bundle": "~1.0",
-        "agitation/seed-bundle": "~1.0"
     },
     "autoload": {
         "psr-4": {
