@@ -1,6 +1,6 @@
 {
     "name": "agitation/user-bundle",
-    "type": "symfony-bundle",
+    "type": "symfony-bundle"
     "require": {
         "agitation/base-bundle": "~1.0",
     },
