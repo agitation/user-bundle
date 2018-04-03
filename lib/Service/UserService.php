@@ -14,12 +14,11 @@ use Agit\BaseBundle\Service\EntityService;
 use Agit\IntlBundle\Tool\Translate;
 use Agit\UserBundle\Entity\UserInterface;
 use Agit\UserBundle\Entity\UserRole;
-use Agit\UserBundle\Exception\AuthenticationFailedException;
-use Agit\UserBundle\Exception\InvalidParametersException;
-use Agit\UserBundle\Exception\UserNotFoundException;
-use Agit\ValidationBundle\ValidationService;
 use Doctrine\ORM\EntityManager;
+use Exception;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Encoder\EncoderFactory;
@@ -54,9 +53,9 @@ class UserService
     private $entityService;
 
     /**
-     * @var ValidationService
+     * @var PasswordValidator
      */
-    private $validationService;
+    private $passwordValidator;
 
     private $user = false;
 
@@ -66,14 +65,14 @@ class UserService
         EncoderFactory $securityEncoderFactory,
         EntityManager $entityManager,
         EntityService $entityService,
-        ValidationService $validationService
+        PasswordValidator $passwordValidator
     ) {
         $this->session = $session;
         $this->securityTokenStorage = $securityTokenStorage;
         $this->securityEncoderFactory = $securityEncoderFactory;
         $this->entityManager = $entityManager;
         $this->entityService = $entityService;
-        $this->validationService = $validationService;
+        $this->passwordValidator = $passwordValidator;
     }
 
     public function authenticate($username, $password)
@@ -83,7 +82,7 @@ class UserService
 
         if (! $encoder->isPasswordValid($user->getPassword(), $password, $user->getSalt()))
         {
-            throw new AuthenticationFailedException(Translate::t('Authentication has failed. Please check your user name and your password.'));
+            throw new UnauthorizedHttpException(Translate::t('Authentication has failed. Please check your user name and your password.'));
         }
 
         $this->user = $user;
@@ -112,7 +111,7 @@ class UserService
 
         if (! $user || $user->isDeleted())
         {
-            throw new UserNotFoundException('The requested user does not exist.');
+            throw new NotFoundHttpException('The requested user does not exist.');
         }
 
         return $user;
@@ -127,7 +126,7 @@ class UserService
             $this->getUser($id);
             $exists = true;
         }
-        catch (UserNotFoundException $e)
+        catch (NotFoundHttpException $e)
         {
         }
 
@@ -180,7 +179,7 @@ class UserService
 
     public function encodePassword(UserInterface $user, $password)
     {
-        $this->validationService->validate('password', $password);
+        $this->passwordValidator->validate($password);
         $encoder = $this->securityEncoderFactory->getEncoder($user);
 
         return $encoder->encodePassword($password, $user->getSalt());
@@ -201,7 +200,7 @@ class UserService
 
         if (! $role)
         {
-            throw new InvalidParametersException('Invalid role.');
+            throw new Exception('Invalid role.');
         }
 
         if (isset($fields['capabilities']))

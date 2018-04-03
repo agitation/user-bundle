@@ -3,16 +3,6 @@ msgstr ""
 "Language: en_US\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: @AgitUserBundle/EventListener/UserRoleSeed.php:22
-msgctxt "user role"
-msgid "Administrator"
-msgstr ""
-
-#: @AgitUserBundle/Service/UserService.php:97
-#: @AgitUserBundle/Service/UserService.php:105
+#: @AgitUserBundle/Service/UserService.php:86
 msgid "Authentication has failed. Please check your user name and your password."
-msgstr ""
-
-#: @AgitUserBundle/Service/UserService.php:134
-msgid "The requested user does not exist."
 msgstr ""

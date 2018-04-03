@@ -2,9 +2,7 @@ services:
 
     agit.user:
         class: Agit\UserBundle\Service\UserService
-        arguments: [ "@session", "@security.token_storage", "@security.encoder_factory", "@doctrine.orm.entity_manager", "@agit.entity", "@agit.validation" ]
+        arguments: [ "@session", "@security.token_storage", "@security.encoder_factory", "@doctrine.orm.entity_manager", "@agit.entity", "@agit.password_validator" ]
 
-    agit.seed.userrole:
-        private: true
-        class: Agit\UserBundle\EventListener\UserRoleSeed
-        tags: [{ name: kernel.event_listener, event: agit.seed, method: registerSeed }]
+    agit.password_validator:
+        class: Agit\UserBundle\Service\PasswordValidator

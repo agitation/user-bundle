@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Agit\UserBundle\Command;
 
-use Agit\UserBundle\Exception\InvalidParametersException;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -36,7 +36,7 @@ class UserAddCommand extends ContainerAwareCommand
 
             if (count($parts) !== 2)
             {
-                throw new InvalidParametersException(sprintf('Invalid field value: %s.', $value));
+                throw new Exception(sprintf('Invalid field value: %s.', $value));
             }
 
             $fields[$parts[0]] = $parts[1];
